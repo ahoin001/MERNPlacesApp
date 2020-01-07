@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-d
 import Users from './user/pages/Users'
 import MainNavigation from './shared/components/Navigation/MainNavigation'
 import { NewPlace } from './places/pages/NewPlace'
+import UserPlaces from './places/pages/UserPlaces';
 
 const App = () => {
 
@@ -21,6 +22,13 @@ const App = () => {
         {/* path is url received, child is component that will be returned, exact makes sure to only provide if match is exact */}
         <Route path="/" exact>
           <Users />
+        </Route>
+
+        {/* DYNAMIC ROUTE */}
+        {/* ' :userID ' is a parameter in URL, that can be anything and also we can extract in the rendered component */}
+        {/* ex/ /user27/places */}
+        <Route path="/:userID/places" exact>
+          <UserPlaces />
         </Route>
 
         <Route path="/places/new" exact>
