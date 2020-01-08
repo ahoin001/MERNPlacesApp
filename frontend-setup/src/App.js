@@ -27,7 +27,7 @@ const App = () => {
         {/* DYNAMIC ROUTE */}
         {/* ' :userID ' is a parameter in URL, that can be anything and also we can extract in the rendered component */}
         {/* ex/ /user27/places */}
-        <Route path="/:userID/places" exact>
+        <Route path="/:userId/places" exact>
           <UserPlaces />
         </Route>
 
