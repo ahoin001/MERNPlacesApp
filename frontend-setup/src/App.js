@@ -1,3 +1,9 @@
+/*
+Need to improve: 
+1. Understand React Portals use and function better
+
+*/
+
 import React from 'react';
 import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
 
