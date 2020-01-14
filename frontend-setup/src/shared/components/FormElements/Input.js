@@ -7,6 +7,7 @@ const inputReducer = (state, action) => {
     switch (action.type) {
 
         case 'CHANGE':
+            console.log(`From input.js -- is valid ${validate(action.val, action.validators)}`)
             return {
                 // copies old state so we don't lose it
                 ...state,
@@ -54,11 +55,16 @@ const Input = props => {
     useEffect(() => {
 
         // Passed function will update the parent component state
+        console.log(`+++++IsValid being passed to state of form ${isValid}`)
         onInput(id, value, isValid)
 
     }, [id, onInput, value, isValid]) // Logic above will run whenever props or inputState changes
 
+
+
+
     // Dispatch arguments are passed as action to inputReducer in useReducer
+    // To change state to match user input
     const changedHandler = event => {
 
         // Passes action object to reducer function
@@ -92,8 +98,8 @@ const Input = props => {
             <textarea
                 id={props.id}
                 rows={props.rowss || 3}
-                onBlur={touchHandler}
                 onChange={changedHandler}
+                onBlur={touchHandler}
                 value={inputState.value}
             />
         );
