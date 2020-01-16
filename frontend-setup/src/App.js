@@ -11,6 +11,7 @@ import Users from './user/pages/Users'
 import MainNavigation from './shared/components/Navigation/MainNavigation'
 import { NewPlace } from './places/pages/NewPlace'
 import UserPlaces from './places/pages/UserPlaces';
+import UpdatePlace from './places/pages/UpdatePlace';
 
 const App = () => {
 
@@ -22,7 +23,7 @@ const App = () => {
     {/* CSS Applied to main to keep it from being below the mainnavigation componenet */}
     <main>
 
-      {/* Switch will render component as soon as it finds a match, instead of going all the way down to redirect */}
+      {/* Switch will render first matching path, Router would possibly render multiple (ex/ /places/new and /places/:placeId would both render */}
       <Switch>
 
         {/* path is url received, child is component that will be returned, exact makes sure to only provide if match is exact */}
@@ -41,8 +42,12 @@ const App = () => {
           <NewPlace />
         </Route>
 
+        <Route path="/places/:placeId" exact>
+          <UpdatePlace />
+        </Route>
+
         {/* If none of the routes are provided, redirect to provided path in redirect */}
-        <Redirect to="/" />
+        <Redirect to="//places/:placeId/" />
 
       </Switch>
 
