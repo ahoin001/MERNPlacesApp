@@ -12,7 +12,7 @@ const formReducer = (state, action) => {
 
         case 'INPUT_CHANGE':
             let formIsValid = true;
-            console.log(formIsValid)
+            // console.log(formIsValid)
 
             // input id will be the name of properties in state.inputs
             for (let inputId in state.inputs) {
@@ -20,23 +20,23 @@ const formReducer = (state, action) => {
                 // checks if the name of the property is same as input from action 
                 if (inputId === action.inputId) {
 
-                    console.log(`IN IF- THE INPUTID: ${inputId} and actionId: ${action.inputId}
-                    AND IS FORM VALID ${action.isValid}`)
+                    // console.log(`IN IF- THE INPUTID: ${inputId} and actionId: ${action.inputId}
+                    // AND IS FORM VALID ${action.isValid}`)
 
                     // form is valid is true if formIsValid and action.isValid are true
                     formIsValid = formIsValid && action.isValid;
 
-                    console.log(formIsValid)
-                    // formIsValid = true
+                    // console.log(formIsValid)
+
                 }
 
                 else {
-                    console.log(`IN ELSE- THE INPUTID: ${inputId} and actionId: ${action.inputId}
-                    AND IS FORM VALID ${action.isValid}`)
+                    // console.log(`IN ELSE- THE INPUTID: ${inputId} and actionId: ${action.inputId}
+                    // AND IS FORM VALID ${action.isValid}`)
 
                     formIsValid = formIsValid && state.inputs[inputId].isValid;
-                    
-                    console.log(`FROM ELSE AFTER CECKING OOTHER INNPUT${formIsValid}`)
+
+                    // console.log(`FROM ELSE AFTER CECKING OOTHER INNPUT${formIsValid}`)
                 }
             }
 
@@ -44,9 +44,13 @@ const formReducer = (state, action) => {
 
                 ...state,
 
-                // and then over ride properties
+                // and then over ride necessary info
                 inputs: {
+
+                    // Copies Properties of inputs object
                     ...state.inputs,
+
+                    // Over ride the inputs property (title or description) that sent action
                     [action.inputId]: { value: action.value, isValid: action.isValid }
                 },
 
@@ -95,8 +99,17 @@ export const NewPlace = () => {
 
     }, [])
 
+
+    const placeSubmitHandler = event => {
+        // Prevent form from refreshing page which would ruin react render
+        event.preventDefault();
+
+        console.log(formState.inputs)
+    }
+
+
     return (
-        <form className="place-form">
+        <form className="place-form" onSubmit={placeSubmitHandler}>
 
             <Input
                 id='title'

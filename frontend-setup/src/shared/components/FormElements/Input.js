@@ -7,7 +7,7 @@ const inputReducer = (state, action) => {
     switch (action.type) {
 
         case 'CHANGE':
-            console.log(`From input.js -- is valid ${validate(action.val, action.validators)}`)
+            // console.log(`From input.js -- is valid ${validate(action.val, action.validators)}`)
             return {
                 // copies old state so we don't lose it
                 ...state,
@@ -55,7 +55,8 @@ const Input = props => {
     useEffect(() => {
 
         // Passed function will update the parent component state
-        console.log(`+++++IsValid being passed to state of form ${isValid}`)
+        // console.log(`+++++IsValid being passed to state of form ${isValid}`)
+
         onInput(id, value, isValid)
 
     }, [id, onInput, value, isValid]) // Logic above will run whenever props or inputState changes
