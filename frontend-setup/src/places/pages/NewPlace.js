@@ -51,6 +51,7 @@ const formReducer = (state, action) => {
                     ...state.inputs,
 
                     // Over ride the inputs property (title or description) that sent action
+                    // Will add new property if input is not already in state (ex/ Adress is not in original state)
                     [action.inputId]: { value: action.value, isValid: action.isValid }
                 },
 
@@ -80,7 +81,8 @@ export const NewPlace = () => {
             description: {
                 value: '',
                 isValid: false
-            }
+            },
+
         },
         isValid: false
     })
@@ -104,7 +106,7 @@ export const NewPlace = () => {
         // Prevent form from refreshing page which would ruin react render
         event.preventDefault();
 
-        console.log(formState.inputs)
+        console.log(formState.inputs) // Will be able to send this to back end
     }
 
 
@@ -120,6 +122,17 @@ export const NewPlace = () => {
                 validators={[VALIDATOR_REQUIRE()]}
                 onInput={inputHandler}
                 errorText='Please Enter a valid title'
+            />
+
+            <Input
+                id='adress'
+                element='input'
+                type='text'
+                label='Adress'
+                // VALIDATOR CHECKS IF INPUT IS EMPTY 
+                validators={[VALIDATOR_REQUIRE()]}
+                onInput={inputHandler}
+                errorText='Please Enter a valid adress'
             />
 
             <Input
