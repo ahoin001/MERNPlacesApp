@@ -15,6 +15,8 @@ export const NewPlace = () => {
     // Custom Hook needs object of inputs, and initial form validity
     const [formState, inputHandler] = useForm({
 
+        // isValids are initially false because when creating new place fields should be empty(which fails validation)
+
         title: {
             value: '',
             isValid: false
@@ -42,6 +44,8 @@ export const NewPlace = () => {
 
     return (
         <form className="place-form" onSubmit={placeSubmitHandler}>
+
+            {/* All Inputs change different properties of the same state */}
 
             <Input
                 id='title'
