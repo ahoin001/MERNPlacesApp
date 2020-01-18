@@ -41,9 +41,11 @@ const Input = props => {
     // Arguments in useReducer are a reducer function and an initial state
     // It returns the state and a dispatch function that is used to alter the state
     const [inputState, dispatch] = useReducer(inputReducer, {
+
+        // If props value provided use it, otherwise it is empty
         value: props.value || '',
-        isValid: false,
-        isTouched: props.valid || false,
+        isValid: props.valid || false,
+        isTouched: false,
     });
 
 
@@ -60,7 +62,6 @@ const Input = props => {
         onInput(id, value, isValid)
 
     }, [id, onInput, value, isValid]) // Logic above will run whenever props or inputState changes
-
 
 
 

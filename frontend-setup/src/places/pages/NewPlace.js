@@ -4,7 +4,7 @@ import Input from '../../shared/components/FormElements/Input'
 import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from "../../shared/components/Util/Validator";
 import Button from '../../shared/components/FormElements/Button';
 
-import './NewPlace.css'
+import './PlaceForm.css'
 
 const formReducer = (state, action) => {
 
@@ -82,6 +82,10 @@ export const NewPlace = () => {
                 value: '',
                 isValid: false
             },
+            adress: {
+                value: '',
+                isValid: false
+            }
 
         },
         isValid: false
