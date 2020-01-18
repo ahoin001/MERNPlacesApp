@@ -41,9 +41,9 @@ const Input = props => {
     // Arguments in useReducer are a reducer function and an initial state
     // It returns the state and a dispatch function that is used to alter the state
     const [inputState, dispatch] = useReducer(inputReducer, {
-        value: '',
+        value: props.value || '',
         isValid: false,
-        isTouched: false
+        isTouched: props.valid || false,
     });
 
 

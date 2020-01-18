@@ -66,7 +66,7 @@ const Modal = props => {
                 {/* ...props will take all props passed in to Modal will be given to Model Overlay as well */}
                 <ModalOverlay {...props} />
 
-            </CSSTransition>>
+            </CSSTransition>
 
         </React.Fragment>
 

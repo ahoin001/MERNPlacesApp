@@ -53,7 +53,6 @@ const PlaceItem = (props) => {
             </Modal>
 
             <li className='place-item'>
-
                 <Card className='place-item__content'>
 
                     <div className="place-item__image">
@@ -76,7 +75,9 @@ const PlaceItem = (props) => {
 
                 </Card>
 
-            </li></React.Fragment>
+            </li>
+
+        </React.Fragment>
 
 
 
