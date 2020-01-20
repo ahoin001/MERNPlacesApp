@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from "react-dom";
-import {CSSTransition} from 'react-transition-group'
+import { CSSTransition } from 'react-transition-group'
 
 import './Modal.css'
 import Backdrop from './Backdrop';
@@ -24,7 +24,7 @@ const ModalOverlay = props => {
             <form onSubmit={props.onSubmit ? props.onSubmit : event => event.preventDefault()}>
 
                 <div className={`modal__content ${props.contentClass}`}>
-                    
+
                     {/* THIS IS WHERE CONTENT FROM CHILDREN IS USED */}
                     {/* So we can pass as much as we need to here we use children */}
                     {props.children}
@@ -59,6 +59,7 @@ const Modal = props => {
 
             {/* Animation rules */}
             <CSSTransition
+                // props.show true will make modal come in
                 in={props.show}
                 mountOnEnter
                 unmountOnExit

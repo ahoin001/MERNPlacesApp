@@ -13,6 +13,8 @@ import './PlaceItem.css'
 const PlaceItem = (props) => {
 
     const [showMap, setShowMap] = useState(false)
+    const [showConfirmModal, setShowConfirmModal] = useState(false)
+
 
     const openMapHandler = () => {
         setShowMap(true)
@@ -22,6 +24,19 @@ const PlaceItem = (props) => {
         setShowMap(false)
     }
 
+    const showDeleteWarningHandler = () => {
+        setShowConfirmModal(true)
+    }
+
+    const cancelDeleteHandler = () => {
+        setShowConfirmModal(false)
+    }
+
+    const confirmDeleteHandler = () => {
+        console.log('WILL DELETE PLACE OH YEAH')
+    }
+
+
 
     return (
 
@@ -30,8 +45,8 @@ const PlaceItem = (props) => {
             {/* Modal uses React Portal to be rendered in a different place, instead of above listitem.  */}
             {/* Achieves same look but is better semantically  */}
 
+            {/* Google Maps Modal */}
             <Modal
-            
                 show={showMap}
                 // note, on cancel is passed to modal, then to backdrop, this oncancel closes map handler , other closed drawer
                 onCancel={closeMapHandler}
@@ -53,6 +68,23 @@ const PlaceItem = (props) => {
 
             </Modal>
 
+            {/* Delete Confirmation Modal */}
+            <Modal
+                show={showConfirmModal}
+                header="Are you sure?"
+                footerClass="place-item__modal-actionsc"
+                footer={
+                    <React.Fragment>
+                        <Button inverse onClick={cancelDeleteHandler}> CANCEL </Button>
+                        <Button danger onClick={confirmDeleteHandler}> DELETE </Button>
+                    </React.Fragment>
+                }
+            >
+
+                <p>Are you sure you want to delete this place? It can not be undone later...</p>
+
+            </Modal>
+
             <li className='place-item'>
 
                 <Card className='place-item__content'>
@@ -71,7 +103,7 @@ const PlaceItem = (props) => {
 
                         <Button inverse onClick={openMapHandler}>VIEW ON MAP</Button>
                         <Button to={`/places/${props.id}`}>EDIT</Button>
-                        <Button danger>DELETE</Button>
+                        <Button danger onClick={showDeleteWarningHandler}>DELETE</Button>
 
                     </div>
 
