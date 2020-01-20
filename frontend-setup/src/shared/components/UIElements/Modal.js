@@ -6,7 +6,7 @@ import './Modal.css'
 import Backdrop from './Backdrop';
 
 /*
-    Component that displays list of PlaceItem components
+    Content of Modal
 */
 const ModalOverlay = props => {
 
@@ -19,12 +19,16 @@ const ModalOverlay = props => {
                 <h2>{props.header}</h2>
             </header>
 
-            {/* If onsubmit function provided, then use it (it has its wn prevent default), else prevent butttons from refreshing page onsubmit */}
+            {/* Form is used so I can use button in footer */}
+            {/* If onsubmit function provided,use it, else prevent butttons from refreshing page onsubmit */}
             <form onSubmit={props.onSubmit ? props.onSubmit : event => event.preventDefault()}>
 
                 <div className={`modal__content ${props.contentClass}`}>
+                    
+                    {/* THIS IS WHERE CONTENT FROM CHILDREN IS USED */}
                     {/* So we can pass as much as we need to here we use children */}
                     {props.children}
+
                 </div>
 
                 <footer className={`footer ${props.footerClass}`}>
@@ -42,7 +46,7 @@ const ModalOverlay = props => {
 
 
 /*
-    
+    Reusable Modal that has an animation and accepts children (used in Modal Overlay) to show content
 */
 const Modal = props => {
 
@@ -50,7 +54,7 @@ const Modal = props => {
 
         <React.Fragment>
 
-            {/* If we have true for show prop, render Backdrop, and onClick handle cancellation with prop */}
+            {/* If we have true for show prop meaning modal is showing, render Backdrop, & onClick handle cancellation for user to tap and leave  */}
             {props.show && <Backdrop onClick={props.onCancel} />}
 
             {/* Animation rules */}

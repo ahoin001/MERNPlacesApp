@@ -31,6 +31,7 @@ const PlaceItem = (props) => {
             {/* Achieves same look but is better semantically  */}
 
             <Modal
+            
                 show={showMap}
                 // note, on cancel is passed to modal, then to backdrop, this oncancel closes map handler , other closed drawer
                 onCancel={closeMapHandler}
@@ -53,6 +54,7 @@ const PlaceItem = (props) => {
             </Modal>
 
             <li className='place-item'>
+
                 <Card className='place-item__content'>
 
                     <div className="place-item__image">
@@ -78,8 +80,6 @@ const PlaceItem = (props) => {
             </li>
 
         </React.Fragment>
-
-
 
     )
 }
