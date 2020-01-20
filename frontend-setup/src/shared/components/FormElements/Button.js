@@ -20,6 +20,8 @@ const Button = props => {
             </a>
         );
     }
+
+    // If provided a url, create a link componnent to go there and accept children (Anything in Button tags)
     if (props.to) {
         return (
             <Link
