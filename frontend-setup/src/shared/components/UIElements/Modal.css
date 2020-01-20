@@ -1,5 +1,5 @@
 .modal {
-    z-index: 100;
+    z-index: 100; /* To have modal Above everything */
     position: fixed;
     top: 22vh;
     left: 10%;
@@ -30,7 +30,10 @@
   
   @media (min-width: 768px) {
     .modal {
+      /* 50% From the left, -20rem 
+      (Since modal width is 40, 20 on left 20 on right from the center */
       left: calc(50% - 20rem);
+      /* left: 60rem; */
       width: 40rem;
     }
   }
