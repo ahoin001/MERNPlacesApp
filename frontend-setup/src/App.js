@@ -4,8 +4,9 @@ Need to improve:
 
 */
 
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
+import AuthContext from './shared/components/context/auth-context'
 
 import Users from './user/pages/Users'
 import Authenticate from './user/pages/Authenticate'
@@ -16,51 +17,70 @@ import UpdatePlace from './places/pages/UpdatePlace';
 
 const App = () => {
 
-  return <Router>
+  // State to pass if user is loggedIn to any component that needs the info
+  const [isLoggedIn, setisLoggedIn] = useState(false)
 
-    {/* Rendered above the Links (and switch) because it will always be rendered and visible */}
-    <MainNavigation />
+  const login = useCallback(() => {
+    setisLoggedIn(true)
+  }, [])
 
-    {/* CSS Applied to main to keep it from being below the mainnavigation componenet */}
-    <main>
+  const logout = useCallback(() => {
+    setisLoggedIn(false)
+  }, []
+  )
 
-      {/* Switch will render first matching path, Router would possibly render multiple (ex/ /places/new and /places/:placeId would both render */}
-      <Switch>
+  return (
 
-        {/* path is url received, child is component that will be returned, exact makes sure to only provide if match is exact */}
-        <Route path="/" exact>
-          <Users />
-        </Route>
+    // Context Object has a react property called Provider
+    // It allows consuming components to subscribe to context changes.
+    <AuthContext.Provider value={{ isLoggedIn: isLoggedIn, login: login, logout: logout }}>
 
-        {/* DYNAMIC ROUTE */}
-        {/* ' :userID ' is a parameter in URL, that can be anything and also we can extract in the rendered component */}
-        {/* ex/ /user27/places */}
-        <Route path="/:userId/places" exact>
-          <UserPlaces />
-        </Route>
+      <Router>
 
-        <Route path="/places/new" exact>
-          <NewPlace />
-        </Route>
+        {/* Rendered above the Links (and switch) because it will always be rendered and visible */}
+        <MainNavigation />
 
-        <Route path="/places/:placeId" exact>
-          <UpdatePlace />
-        </Route>
+        {/* CSS Applied to main to keep it from being below the mainnavigation componenet */}
+        <main>
 
-        <Route path="/auth" exact>
-          <Authenticate />
-        </Route>
+          {/* Switch will render first matching path, Router would possibly render multiple (ex/ /places/new and /places/:placeId would both render */}
+          <Switch>
 
-        {/* If none of the routes are provided, redirect to provided path in redirect */}
-        <Redirect to="/" />
+            {/* path is url received, child is component that will be returned, exact makes sure to only provide if match is exact */}
+            <Route path="/" exact>
+              <Users />
+            </Route>
 
-      </Switch>
+            {/* DYNAMIC ROUTE */}
+            {/* ' :userID ' is a parameter in URL, that can be anything and also we can extract in the rendered component */}
+            {/* ex/ /user27/places */}
+            <Route path="/:userId/places" exact>
+              <UserPlaces />
+            </Route>
 
-    </main>
+            <Route path="/places/new" exact>
+              <NewPlace />
+            </Route>
 
+            <Route path="/places/:placeId" exact>
+              <UpdatePlace />
+            </Route>
 
+            <Route path="/auth" exact>
+              <Authenticate />
+            </Route>
 
-  </Router>
+            {/* If none of the routes are provided, redirect to provided path in redirect */}
+            <Redirect to="/" />
+
+          </Switch>
+
+        </main>
+
+      </Router>
+
+    </AuthContext.Provider>
+  )
 
 }
 
