@@ -29,6 +29,59 @@ const App = () => {
   }, []
   )
 
+  let routes;
+
+  // Have different routes and redirects if user is logged in
+  if (isLoggedIn) {
+    routes = (
+      
+      // Switch will render first matching path, Router would possibly render multiple (ex/ /places/new and /places/:placeId would both render
+      <Switch>
+
+        {/* path is url received, child is component that will be returned, exact makes sure to only provide if match is exact */}
+        <Route path="/places/new" exact>
+          <NewPlace />
+        </Route>
+
+        <Route path="/places/:placeId" exact>
+          <UpdatePlace />
+        </Route>
+
+        <Redirect to='/' />
+
+      </Switch>
+
+    )
+
+  }
+  else {
+    routes = (
+
+      <Switch>
+
+        <Route path="/" exact>
+          <Users />
+        </Route>
+
+        {/* DYNAMIC ROUTE */}
+        {/* ' :userID ' is a parameter in URL, that can be anything and also we can extract in the rendered component */}
+        {/* ex/ /user27/places */}
+        <Route path="/:userId/places" exact>
+          <UserPlaces />
+        </Route>
+
+        <Route path="/auth" exact>
+          <Authenticate />
+        </Route>
+
+        {/* Redirect to auth if no match  */}
+        <Redirect to='/auth' />
+
+      </Switch>
+
+    )
+  }
+
   return (
 
     // Context Object has a react property called Provider
@@ -40,40 +93,9 @@ const App = () => {
         {/* Rendered above the Links (and switch) because it will always be rendered and visible */}
         <MainNavigation />
 
-        {/* CSS Applied to main to keep it from being below the mainnavigation componenet */}
         <main>
 
-          {/* Switch will render first matching path, Router would possibly render multiple (ex/ /places/new and /places/:placeId would both render */}
-          <Switch>
-
-            {/* path is url received, child is component that will be returned, exact makes sure to only provide if match is exact */}
-            <Route path="/" exact>
-              <Users />
-            </Route>
-
-            {/* DYNAMIC ROUTE */}
-            {/* ' :userID ' is a parameter in URL, that can be anything and also we can extract in the rendered component */}
-            {/* ex/ /user27/places */}
-            <Route path="/:userId/places" exact>
-              <UserPlaces />
-            </Route>
-
-            <Route path="/places/new" exact>
-              <NewPlace />
-            </Route>
-
-            <Route path="/places/:placeId" exact>
-              <UpdatePlace />
-            </Route>
-
-            <Route path="/auth" exact>
-              <Authenticate />
-            </Route>
-
-            {/* If none of the routes are provided, redirect to provided path in redirect */}
-            <Redirect to="/" />
-
-          </Switch>
+          {routes}
 
         </main>
 
