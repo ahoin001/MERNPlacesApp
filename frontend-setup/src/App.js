@@ -32,7 +32,7 @@ const App = () => {
   return (
 
     // Context Object has a react property called Provider
-    // It allows consuming components to subscribe to context changes.
+    // It allows consuming components to 'listen' to context changes.
     <AuthContext.Provider value={{ isLoggedIn: isLoggedIn, login: login, logout: logout }}>
 
       <Router>
