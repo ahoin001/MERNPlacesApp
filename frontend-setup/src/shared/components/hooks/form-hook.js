@@ -11,6 +11,12 @@ const formReducer = (state, action) => {
             // iterate through each input property in state
             for (let inputId in state.inputs) {
 
+                // skip this iteration of loop if the property is falsy ( or undefined)
+                if (!state.inputs[inputId]) {
+                    // skips this iteration of for loop
+                    continue
+                }
+
                 // if a property from state matches inputId from dispatch (text,description etc)
                 if (inputId === action.inputId) {
 
