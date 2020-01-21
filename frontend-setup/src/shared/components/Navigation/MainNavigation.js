@@ -31,19 +31,20 @@ const MainNavigation = props => {
             {drawerIsOpen && <Backdrop onClick={closeDrawerHandler} />}
 
             {/* If drawer is open is true, drawer enter animation starts and exits when false */}
-            <SideDrawer 
-            show={drawerIsOpen}
-            onClick={closeDrawerHandler}
+            <SideDrawer
+                show={drawerIsOpen}
+                onClick={closeDrawerHandler}
             >
 
                 <nav className="main-navigation__drawer-nav">
                     <NavLinks />
                 </nav>
 
-            </SideDrawer>)
+            </SideDrawer>
 
             <MainHeader>
 
+                {/* Responsive Hamburger Menu for Smaller screens */}
                 <button
                     className="main-navigation__menu-btn"
                     onClick={openDrawerHandler}>
@@ -66,7 +67,6 @@ const MainNavigation = props => {
             </MainHeader>
 
         </React.Fragment>
-
     )
 }
 

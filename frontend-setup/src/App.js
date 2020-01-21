@@ -8,6 +8,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
 
 import Users from './user/pages/Users'
+import Authenticate from './user/pages/Authenticate'
 import MainNavigation from './shared/components/Navigation/MainNavigation'
 import { NewPlace } from './places/pages/NewPlace'
 import UserPlaces from './places/pages/UserPlaces';
@@ -46,8 +47,12 @@ const App = () => {
           <UpdatePlace />
         </Route>
 
+        <Route path="/auth" exact>
+          <Authenticate />
+        </Route>
+
         {/* If none of the routes are provided, redirect to provided path in redirect */}
-        <Redirect to="//places/:placeId/" />
+        <Redirect to="/" />
 
       </Switch>
 
