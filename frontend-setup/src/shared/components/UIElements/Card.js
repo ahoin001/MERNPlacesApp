@@ -3,7 +3,7 @@ import React from 'react';
 import './Card.css';
 
 /*
-    Component that is user item with user info to be displayed on list
+    Component thatacts as styled container
 */
 
 const Card = props => {
