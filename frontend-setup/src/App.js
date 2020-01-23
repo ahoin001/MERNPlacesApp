@@ -17,7 +17,9 @@ import UpdatePlace from './places/pages/UpdatePlace';
 
 const App = () => {
 
-  // State to pass if user is loggedIn to any component that needs the info
+  /*
+   State to pass if user is loggedIn to any component that needs the info
+  */
   const [isLoggedIn, setisLoggedIn] = useState(false)
 
   const login = useCallback(() => {
@@ -31,10 +33,12 @@ const App = () => {
 
   let routes;
 
-  // Have different routes and redirects if user is logged in
+  /*
+   Have different routes and redirects if user is logged in
+  */
   if (isLoggedIn) {
     routes = (
-      
+
       // Switch will render first matching path, Router would possibly render multiple (ex/ /places/new and /places/:placeId would both render
       <Switch>
 
