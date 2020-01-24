@@ -13,19 +13,13 @@ const dummyUsersList = [
     {
         Name: 'Revan',
         creator: 'u3'
-    },
+    }
 ]
 
-router.get('/', (req, res, next) => {
+// router.get('/', (req, res, next) => {
 
-    res.json(dummyUsersList)
+//     res.json(dummyUsersList)
 
-})
-
-router.get('/', (req, res, next) => {
-
-    res.json(dummyUsersList)
-
-})
+// })
 
 module.exports = router

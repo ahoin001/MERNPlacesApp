@@ -2,6 +2,9 @@ const express = require('express')
 // Returns Router Object from express object
 const router = express.Router()
 
+// We created this class to not repeat code for creating errors to send to appj.js error handler
+const HttpError = require('../models/http-error')
+
 const placesList = [
     {
         id: 'p1',
@@ -47,16 +50,16 @@ router.get('/:pid', (req, res, next) => {
 
     // finds/returns 1st element in array that satisfies our condition
     const place = placesList.find(p => {
-        console.log(p)
         return p.id === pid
     })
 
     // if place could not be found ( place is undefined) return a 404 error
+    // throws error that will trigger error handling middleware in app.js
     if (!place) {
-        res.status(404).json({ message: "Could not find place matching place ID" })
-    } else {
 
-        res.json({ place }) // {place} => {place: place}
+        // throw need'nt return because it cancels excecution already
+        // Our custom class recieves a custom message and an error code
+        throw new HttpError('Could not find a place for the provided id', 404);
 
     }
 
@@ -73,7 +76,14 @@ router.get('/user/:uid', (req, res, next) => {
     // array of places matching userid
     const places = placesList.filter(place => place.creator === uid);
 
-    res.json({ places })
+    // if place could not be found ( place is undefined) return a 404 error
+    // next(error) will pass error to next middleware
+    if (!places) {
+
+        // next Is returned so code after doesn't run
+        return next(new HttpError('Could not any places for the provided user id', 404));
+
+    }
 
 })
 
