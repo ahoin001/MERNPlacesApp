@@ -19,6 +19,8 @@ router.get('/:pid', placesControllers.getPlaceById);
 */
 router.get('/user/:uid', placesControllers.getPlaceByUserId);
 
+router.post('/user/createplace',placesControllers.createPlace)
+
 
 
 // Export Router Object that has our routes
