@@ -5,23 +5,17 @@ const router = express.Router()
 // Business Logic functions
 const placesControllers = require('../controller/places-controller')
 
-
-
 /*
-    Return place matching place id
+    Place CRUD Routes
 */
-// http://localhost:5000/api/places/(dynamicParameter)
-// Import controller functions to keep this file slim (seperate concerns)
+
+router.post('/user/createplace', placesControllers.createPlace)
+
 router.get('/:pid', placesControllers.getPlaceById);
 
-/*
-    Return places matching userID
-*/
-router.get('/user/:uid', placesControllers.getPlaceByUserId);
+router.patch('/:pid', placesControllers.updatePlaceById)
 
-router.post('/user/createplace',placesControllers.createPlace)
-
-
+router.delete('/:pid', placesControllers.deletePlaceById);
 
 // Export Router Object that has our routes
 module.exports = router
