@@ -6,16 +6,22 @@ const HttpError = require('../models/http-error')
 
 const dummyUsersList = [
     {
-        Name: 'Kyle',
-        creator: 'u1'
+        id: 'u1',
+        name: 'Kyle',
+        email: 'test@email.com',
+        password: 'testers'
     },
     {
-        Name: 'Kevin',
-        creator: 'u2'
+        id: 'u2',
+        name: 'Ryan',
+        email: 'ryan@email.com',
+        password: 'testers'
     },
     {
-        Name: 'Revan',
-        creator: 'u3'
+        id: 'u3',
+        name: 'Kylo',
+        email: 'kylo@email.com',
+        password: 'testers'
     }
 ]
 
@@ -26,89 +32,41 @@ const listUsers = (req, res, next) => {
 
 }
 
-// const getPlaceById = (req, res, next) => {
+const signup = (req, res, next) => {
 
-//     // Extract parameter from request
-//     const pid = req.params.pid // {pid : dynamicParam}
+    console.log(req.body)
+    const { name, email, password } = req.body;
 
-//     // finds/returns 1st element in array that satisfies our condition
-//     const place = placesList.find(p => {
-//         return p.id === pid
-//     })
+    const newUser = {
+        id: uuid(),
+        name,
+        email,
+        password
+    }
 
-//     // if place could not be found ( place is undefined) return a 404 error
-//     // throws error that will trigger error handling middleware in app.js
-//     if (!place) {
+    dummyUsersList.push(newUser)
 
-//         // throw need'nt return because it cancels excecution already
-//         // Our custom class recieves a custom message and an error code
-//         throw new HttpError('Could not find a place for the provided id', 404);
+    // 201 means created new data
+    res.status(201).json(newUser)
 
-//     }
+}
 
-//     res.json(place)
+const login = (req, res, next) => {
 
-// }
+    const { email, password } = req.body;
 
-// const getPlaceByUserId = (req, res, next) => {
+    const identifiedUser = dummyUsersList.find(user => user.email === email);
 
+    if (!identifiedUser || identifiedUser.password !== password) {
+        throw new HttpError('Could not identify user, credentials please try again', 401)
+    }
 
-//     const uid = req.params.uid
+        res.status(200).json({message:'Logged in!'})
 
-//     // array of places matching userid
-//     const places = placesList.filter(place => place.creator === uid);
+    
+}
 
-//     // if places could not be found return a 404 error
-//     // next(error) will pass error to next middleware
-//     if (places.length === 0) {
+exports.listUsers = listUsers;
+exports.signup = signup;
+exports.login = login;
 
-//         // next Is returned so code after doesn't run
-//         return next(
-//             new HttpError('Could not any places for the provided user id', 404)
-//         );
-
-//     }
-
-//     res.json(places)
-
-// }
-
-
-// const updatePlaceById = (req, res, next) => {
-
-//     // Get the values we want to use for change
-//     const { title, description } = req.body
-
-//     const placeId = req.params.pid
-
-//     // Create a copy of the place we want to update / Good practice to only update once knowing the update has a usable back up 
-//     const updatedPlace = { ...placesList.find(p => p.id === placeId) }
-
-//     // Make changes with new values
-//     updatedPlace.title = title;
-//     updatedPlace.description = description;
-
-//     // Find where the place we want to update is
-//     const placeIndex = placesList.findIndex(p => p.id === placeId)
-
-//     placesList[placeIndex] = updatedPlace
-
-//     res.status(200).json({ updatedPlace })
-
-// }
-
-// const deletePlaceById = (req, res, next) => {
-
-//     // Return list with every item that does not have the id of place we want to delete
-//     placesList = placesList.filter(place => place.id != req.params.pid)
-
-//     res.status(200).json({ placesList })
-// }
-
-// module.exports would export 1 thing 
-// This will export multiple things as one object
-exports.listUsers = listUsers
-// exports.getPlaceById = getPlaceById
-// exports.getPlaceByUserId = getPlaceByUserId
-// exports.updatePlaceById = updatePlaceById
-// exports.deletePlaceById = deletePlaceById
