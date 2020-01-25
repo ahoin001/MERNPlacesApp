@@ -1,10 +1,15 @@
 const express = require('express')
 const app = express();
 const bodyParser = require('body-parser')
+const HttpError = require('./models/http-error')
 
 // Import Routers instead of cluttering this file
 const placesRoutes = require('./routes/places-routes')
 const userRoutes = require('./routes/users-routes')
+
+/*
+    Middleware is run top to bottom, and passed to next with next() or if a response was sent which would satisfy request
+*/
 
 // Parse recieved data no matter what request is made so we can pass it down
 // converts json to useable javascript structures
@@ -15,6 +20,13 @@ app.use('/api/places', placesRoutes); // => /api/places/...
 
 app.use('/api/users', userRoutes); // => /api/places/...
 
+
+// If no response was sent or error handled from previous routes,
+// meaning route requested was not found, return 404 with message
+app.use((req, res, next) => {
+    const error = new HttpError("Could not find this route",404)
+    throw error
+});
 
 
 // In middleware functions with 4 params, we have access to error , only excecuted on requests error was thrown
