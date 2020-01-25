@@ -1,7 +1,6 @@
 const express = require('express')
 // Returns Router Object from express object
 const router = express.Router()
-
 // Business Logic functions
 const placesControllers = require('../controller/places-controller')
 

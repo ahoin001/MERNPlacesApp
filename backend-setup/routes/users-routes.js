@@ -1,25 +1,11 @@
 const express = require('express')
 const router = express.Router();
+const usersControllers = require('../controller/users-controller')
 
-const dummyUsersList = [
-    {
-        Name: 'Kyle',
-        creator: 'u1'
-    },
-    {
-        Name: 'Kevin',
-        creator: 'u2'
-    },
-    {
-        Name: 'Revan',
-        creator: 'u3'
-    }
-]
+router.get('/', usersControllers.listUsers)
 
-// router.get('/', (req, res, next) => {
+// router.post('/signup', usersControllers.signUp)
 
-//     res.json(dummyUsersList)
-
-// })
+// router.post('/login', usersControllers.login);
 
 module.exports = router

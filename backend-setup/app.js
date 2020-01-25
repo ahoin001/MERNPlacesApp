@@ -15,6 +15,7 @@ const userRoutes = require('./routes/users-routes')
 // converts json to useable javascript structures
 app.use(bodyParser.json());
 
+
 // excecutes on all requests (get,post,put etc) that start with http://localhost:5000/api/places
 app.use('/api/places', placesRoutes); // => /api/places/...
 
