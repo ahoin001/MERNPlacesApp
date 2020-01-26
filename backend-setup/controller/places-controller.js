@@ -40,8 +40,6 @@ const createPlace = (req, res, next) => {
     // Returns errors object, with method to check if empty
     const errors = validationResult(req)
 
-    console.log('+++++++++', errors)
-
     // Is empty is method included in validation result returned object
     if (!errors.isEmpty()) {
         res.status(402)
@@ -149,10 +147,14 @@ const updatePlaceById = (req, res, next) => {
 
 const deletePlaceById = (req, res, next) => {
 
+    if (!placesList.find(place => place.id === req.params.pid)) {
+        throw new HttpError(" Could not find place to delete for that id", 404)
+    }
+
     // Return list with every item that does not have the id of place we want to delete
     placesList = placesList.filter(place => place.id != req.params.pid)
 
-    res.status(200).json({ placesList })
+    res.status(200).json({ message: 'Deleted Place' })
 }
 
 // module.exports would export 1 thing 
