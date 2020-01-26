@@ -1,5 +1,8 @@
 // Controller files are intended to hold logic and focus on middleware functions to be used in routes
 
+// To check validation from middleware
+const { validationResult } = require('express-validator')
+
 // Generates Unique Id
 const uuid = require('uuid/v4')
 
@@ -32,6 +35,18 @@ let placesList = [
 ]
 
 const createPlace = (req, res, next) => {
+
+    // Object will be validated in route middleware
+    // Returns errors object, with method to check if empty
+    const errors = validationResult(req)
+
+    console.log('+++++++++', errors)
+
+    // Is empty is method included in validation result returned object
+    if (!errors.isEmpty()) {
+        res.status(402)
+        throw new HttpError('Invalid inputs, please check you data', 422)
+    }
 
     // These are the properties to extract from req/body
     const { title, description, coordinates, adress, creator } = req.body
@@ -81,7 +96,6 @@ const getPlaceById = (req, res, next) => {
 
 const getPlaceByUserId = (req, res, next) => {
 
-
     const uid = req.params.uid
 
     // array of places matching userid
@@ -104,6 +118,13 @@ const getPlaceByUserId = (req, res, next) => {
 
 
 const updatePlaceById = (req, res, next) => {
+
+    const errorsFromValidation = validationResult(req)
+
+    if (!errorsFromValidation.isEmpty()) {
+        res.status(402)
+        throw new HttpError('Invalid inputs, please check you data', 422)
+    }
 
     // Get the values we want to use for change
     const { title, description } = req.body

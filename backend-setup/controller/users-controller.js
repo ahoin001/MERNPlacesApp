@@ -1,7 +1,5 @@
-// Generates Unique Id
 const uuid = require('uuid/v4')
-
-// We created this class to not repeat code for creating errors to send to appj.js error handler
+const { validationResult } = require('express-validator')
 const HttpError = require('../models/http-error')
 
 const dummyUsersList = [
@@ -26,17 +24,28 @@ const dummyUsersList = [
 ]
 
 const listUsers = (req, res, next) => {
-
-
     res.status(200).json(dummyUsersList)
-
 }
 
 const signup = (req, res, next) => {
 
-    console.log(req.body)
+    const errors = validationResult(req)
+    console.log(errors)
+    if (!errors.isEmpty()) {
+        res.status(402)
+        throw new HttpError('Invalid sign up information, please check your data', 422)
+    }
+
     const { name, email, password } = req.body;
 
+    // Check if a user with this email already exsists
+    const hasUser = dummyUsersList.find(user => user.email === email)
+
+    if (hasUser) {
+        throw new HttpError('User with this email already exsists', 422)
+    }
+
+    // create new user and provide a unique id
     const newUser = {
         id: uuid(),
         name,
@@ -53,6 +62,7 @@ const signup = (req, res, next) => {
 
 const login = (req, res, next) => {
 
+    console.log(req.body)
     const { email, password } = req.body;
 
     const identifiedUser = dummyUsersList.find(user => user.email === email);
@@ -61,9 +71,9 @@ const login = (req, res, next) => {
         throw new HttpError('Could not identify user, credentials please try again', 401)
     }
 
-        res.status(200).json({message:'Logged in!'})
+    res.status(200).json({ message: 'Logged in!' })
 
-    
+
 }
 
 exports.listUsers = listUsers;
