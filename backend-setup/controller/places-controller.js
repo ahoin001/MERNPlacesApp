@@ -9,6 +9,8 @@ const uuid = require('uuid/v4')
 // We created this class to not repeat code for creating errors to send to appj.js error handler
 const HttpError = require('../models/http-error')
 
+const getCoordinatesFromAdress = require('../util/location')
+
 let placesList = [
     {
         id: 'p1',
@@ -34,7 +36,7 @@ let placesList = [
     }
 ]
 
-const createPlace = (req, res, next) => {
+const createPlace = async (req, res, next) => {
 
     // Object will be validated in route middleware
     // Returns errors object, with method to check if empty
@@ -43,11 +45,27 @@ const createPlace = (req, res, next) => {
     // Is empty is method included in validation result returned object
     if (!errors.isEmpty()) {
         res.status(402)
-        throw new HttpError('Invalid inputs, please check you data', 422)
+
+        // must use next since throw does not work in 
+        return next(new HttpError('Invalid inputs, please check you data', 422))
+
     }
 
     // These are the properties to extract from req/body
-    const { title, description, coordinates, adress, creator } = req.body
+    const { title, description, adress, creator } = req.body
+
+    let coordinates;
+
+    try {
+
+        // Get Coordinates by providing an 
+        coordinates = await getCoordinatesFromAdress(adress)
+
+    } catch (error) {
+
+        return next(error)
+
+    }
 
     const createdPlace = {
 
