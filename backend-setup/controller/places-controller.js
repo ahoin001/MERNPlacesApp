@@ -91,7 +91,7 @@ const createPlace = async (req, res, next) => {
     } catch (error) {
 
         error = new HttpError('Creating place failed, please try again.', 500);
-        
+
         // use next to stop code excecution
         return next(error)
 
@@ -103,15 +103,22 @@ const createPlace = async (req, res, next) => {
 
 }
 
-const getPlaceById = (req, res, next) => {
+const getPlaceById = async (req, res, next) => {
 
     // Extract parameter from request
-    const pid = req.params.pid // {pid : dynamicParam}
+    const placeId = req.params.pid // {pid : dynamicParam}
+    let place;
 
-    // finds/returns 1st element in array that satisfies our condition
-    const place = placesList.find(p => {
-        return p.id === pid
-    })
+    try {
+        // static method that can be used directly on constructor
+        place = await Place.findById(placeId)
+
+    } catch (err) {
+
+        const error = new HttpError('Something went wrong, could not find a place', 500);
+        return next(error)
+
+    }
 
     // if place could not be found ( place is undefined) return a 404 error
     // throws error that will trigger error handling middleware in app.js
@@ -119,33 +126,45 @@ const getPlaceById = (req, res, next) => {
 
         // throw need'nt return because it cancels excecution already
         // Our custom class recieves a custom message and an error code
-        throw new HttpError('Could not find a place for the provided id', 404);
+        const error = new HttpError('Could not find a place for the provided id', 404);
+
+        return next(error)
 
     }
 
-    res.json(place)
+    // Turn document into normal js object , getters true to add id property to object after toObject() 
+    res.json({ place: place.toObject({ getters: true }) })
 
 }
 
-const getPlaceByUserId = (req, res, next) => {
+const getPlaceByUserId = async (req, res, next) => {
 
-    const uid = req.params.uid
+    const userId = req.params.uid
+    console.log('+++++++++' + userId)
+    let places;
+    try {
 
-    // array of places matching userid
-    const places = placesList.filter(place => place.creator === uid);
+        // find place that matches property and value 
+        // returns an array
+        places = await Place.find({ creator: userId })
 
-    // if places could not be found return a 404 error
-    // next(error) will pass error to next middleware
-    if (places.length === 0) {
+    } catch (err) {
 
-        // next Is returned so code after doesn't run
-        return next(
-            new HttpError('Could not any places for the provided user id', 404)
-        );
+        const error = new HttpError('Failed to fetch places for this user', 500);
+        return next(error)
 
     }
 
-    res.json(places)
+    if (!places || places.length === 0) {
+
+        return next(
+            new HttpError('Failed to fetch places for this user', 500)
+        )
+
+    }
+
+    // Since find returns array, map through documents to turn each into js object
+    res.json({ places: places.map(place => place.toObject({ getters: true })) })
 
 }
 
