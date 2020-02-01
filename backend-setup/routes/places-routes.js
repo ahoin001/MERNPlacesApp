@@ -14,7 +14,7 @@ const placesControllers = require('../controller/places-controller')
 router.get('/:pid', placesControllers.getPlaceById);
 
 // Add validation checks on request
-router.post('/user/createplace',
+router.post('/createplace',
     [check('title')
         .not()
         .isEmpty(),
