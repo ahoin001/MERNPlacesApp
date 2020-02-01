@@ -3,6 +3,9 @@ const app = express();
 const bodyParser = require('body-parser')
 const HttpError = require('./models/http-error')
 
+// Connnection to database
+const mongoose = require('mongoose')
+
 // Import Routers instead of cluttering this file
 const placesRoutes = require('./routes/places-routes')
 const userRoutes = require('./routes/users-routes')
@@ -25,7 +28,7 @@ app.use('/api/users', userRoutes); // => /api/places/...
 // If no response was sent or error handled from previous routes,
 // meaning route requested was not found, return 404 with message
 app.use((req, res, next) => {
-    const error = new HttpError("Could not find this route",404)
+    const error = new HttpError("Could not find this route", 404)
     throw error
 });
 
@@ -43,6 +46,15 @@ app.use((error, req, res, next) => {
 
 });
 
-app.listen(5000, () => {
-    console.log('App listening on port 5000!');
-});
+// Establish connection to database and then open server
+mongoose.connect(`mongodb+srv://alex:Alex9595@cluster0-6ofkv.mongodb.net/test?retryWrites=true&w=majority`)
+    .then(() => {
+
+        app.listen(5000, () => {
+            console.log('App listening on port 5000!');
+        });
+    })
+    .catch((err) => {
+        console.log(err)
+    })
+
