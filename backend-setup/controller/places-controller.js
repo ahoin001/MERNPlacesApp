@@ -169,8 +169,9 @@ const getPlaceByUserId = async (req, res, next) => {
 }
 
 
-const updatePlaceById = (req, res, next) => {
+const updatePlaceById = async (req, res, next) => {
 
+    // Before touching data, make sure request is valid
     const errorsFromValidation = validationResult(req)
 
     if (!errorsFromValidation.isEmpty()) {
@@ -183,19 +184,38 @@ const updatePlaceById = (req, res, next) => {
 
     const placeId = req.params.pid
 
-    // Create a copy of the place we want to update / Good practice to only update once knowing the update has a usable back up 
-    const updatedPlace = { ...placesList.find(p => p.id === placeId) }
+    let placeToUpdate;
+
+    try {
+
+        placeToUpdate = await Place.findById(placeId)
+
+    } catch (error) {
+
+        return next(
+            new HttpError('Failed to find place with this id', 500)
+        )
+
+    }
+
 
     // Make changes with new values
-    updatedPlace.title = title;
-    updatedPlace.description = description;
+    placeToUpdate.title = title;
+    placeToUpdate.description = description;
 
-    // Find where the place we want to update is
-    const placeIndex = placesList.findIndex(p => p.id === placeId)
+    try {
 
-    placesList[placeIndex] = updatedPlace
+        // Behind the scenes .save method has change tracking on each document and knows to update document instead of save a new one. 
+        // There are others ways availbale to do this https://masteringjs.io/tutorials/mongoose/update
+        await placeToUpdate.save()
 
-    res.status(200).json({ updatedPlace })
+    } catch (error) {
+        return next(
+            new HttpError('Something went wrong could not update place', 500)
+        )
+    }
+
+    res.status(200).json({ place: [placeToUpdate.toObject({ getters: true })] })
 
 }
 
