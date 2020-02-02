@@ -1,6 +1,9 @@
+// ** NOTE throwing error does not work in async tasks, must use next
 const uuid = require('uuid/v4')
 const { validationResult } = require('express-validator')
 const HttpError = require('../models/http-error')
+
+const User = require('../models/user')
 
 const dummyUsersList = [
     {
@@ -27,36 +30,59 @@ const listUsers = (req, res, next) => {
     res.status(200).json(dummyUsersList)
 }
 
-const signup = (req, res, next) => {
+const signup = async (req, res, next) => {
 
+    // Make sure user inputs are valid
     const errors = validationResult(req)
-    console.log(errors)
+
     if (!errors.isEmpty()) {
         res.status(402)
-        throw new HttpError('Invalid sign up information, please check your data', 422)
+        return next(
+            new HttpError('Invalid sign up information, please check your data', 422)
+        )
     }
 
-    const { name, email, password } = req.body;
+    const { name, email, password, places } = req.body;
 
-    // Check if a user with this email already exsists
-    const hasUser = dummyUsersList.find(user => user.email === email)
+    let exsistingUser;
+    try {
 
-    if (hasUser) {
-        throw new HttpError('User with this email already exsists', 422)
+        // Check if a user already has this email
+        exsistingUser = await User.findOne({ email: email })
+
+    } catch (err) {
+        const error = new HttpError('Sign up failed please check information.', 500)
+        return next(error)
+    }
+
+    if (exsistingUser) {
+        const error = new HttpError('User with this email already exsists, please log in instead', 422)
+        return next(error)
     }
 
     // create new user and provide a unique id
-    const newUser = {
-        id: uuid(),
+    const newUser = new User({
         name,
         email,
-        password
+        image: 'https://tinyurl.com/y2mmdwus',
+        password,
+        places
+
+    })
+
+    try {
+
+        await newUser.save()
+
+    } catch (error) {
+
+        error = new HttpError('Sign up failed, please try again.', 500);
+        // use next to stop code excecution
+        return next(error)
+
     }
 
-    dummyUsersList.push(newUser)
-
-    // 201 means created new data
-    res.status(201).json(newUser)
+    res.status(201).json({ newUser: newUser.toObject({ getters: true }) })
 
 }
 

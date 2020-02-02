@@ -1,5 +1,5 @@
 // Controller files are intended to hold logic and focus on middleware functions to be used in routes
-
+// ** NOTE throwing error does not work in async tasks, must use next
 const Place = require('../models/place')
 
 // To check validation from middleware
@@ -13,30 +13,30 @@ const HttpError = require('../models/http-error')
 
 const getCoordinatesFromAdress = require('../util/location')
 
-let placesList = [
-    {
-        id: 'p1',
-        title: 'Empire State Building',
-        description: 'One of the most famous sky scrapers in the world!',
-        location: {
-            lat: 40.7484474,
-            lng: -73.9871516,
-        },
-        adress: ' 20 W 34th St, New York, NY 10001',
-        creator: 'u1'
-    },
-    {
-        id: 'p2',
-        title: 'Empire ',
-        description: 'One of the most scary places in the world!',
-        location: {
-            lat: 99.2415474,
-            lng: -13.9501516,
-        },
-        adress: ' 20 W 34th St, New York, NY 10001',
-        creator: 'u1'
-    }
-]
+// let placesList = [
+//     {
+//         id: 'p1',
+//         title: 'Empire State Building',
+//         description: 'One of the most famous sky scrapers in the world!',
+//         location: {
+//             lat: 40.7484474,
+//             lng: -73.9871516,
+//         },
+//         adress: ' 20 W 34th St, New York, NY 10001',
+//         creator: 'u1'
+//     },
+//     {
+//         id: 'p2',
+//         title: 'Empire ',
+//         description: 'One of the most scary places in the world!',
+//         location: {
+//             lat: 99.2415474,
+//             lng: -13.9501516,
+//         },
+//         adress: ' 20 W 34th St, New York, NY 10001',
+//         creator: 'u1'
+//     }
+// ]
 
 const createPlace = async (req, res, next) => {
 
@@ -169,7 +169,6 @@ const getPlaceByUserId = async (req, res, next) => {
 
 }
 
-
 const updatePlaceById = async (req, res, next) => {
 
     // Before touching data, make sure request is valid
@@ -177,7 +176,7 @@ const updatePlaceById = async (req, res, next) => {
 
     if (!errorsFromValidation.isEmpty()) {
         res.status(402)
-        throw new HttpError('Invalid inputs, please check you data', 422)
+        return next(new HttpError('Invalid inputs, please check you data', 422))
     }
 
     // Get the values we want to use for change
@@ -228,25 +227,25 @@ const deletePlaceById = async (req, res, next) => {
     const placeId = req.params.pid
     let placeToDelete;
 
-    // try {
+    try {
 
-    //     placeToDelete = await Place.findById(placeId)
-    //     console.log(placeToDelete)
+        placeToDelete = await Place.findById(placeId)
+        console.log(placeToDelete)
 
-    // } catch (error) {
+    } catch (error) {
 
-    //     return next(
-    //         new HttpError('Failed to find place to delete', 500)
-    //     )
+        return next(
+            new HttpError('Failed to find place to delete', 500)
+        )
 
-    // }
+    }
 
     try {
 
-        // await placeToDelete.remove()
+        await placeToDelete.remove()
 
         // Another way of doing it is to delete by id
-        await Place.deleteOne({ _id: placeId })
+        // await Place.deleteOne({ _id: placeId })
 
     } catch (error) {
 

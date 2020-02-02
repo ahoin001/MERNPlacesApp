@@ -12,7 +12,7 @@ async function getCoordinatesFromAdress(adress) {
 
     // Get the data I need from response
     const data = response.data
-    console.log('From Geocode Call +++++++++++++', data)
+    // console.log('From Geocode Call +++++++++++++', data)
 
     if (!data || data.status === 'ZERO_RESULTS') {
 

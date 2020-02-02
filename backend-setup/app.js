@@ -47,7 +47,7 @@ app.use((error, req, res, next) => {
 });
 
 // Establish connection to database and then open server                 Places = name of db, will create new DB if can't find matching name
-mongoose.connect(`mongodb+srv://alex:Alex9595@cluster0-6ofkv.mongodb.net/Places?retryWrites=true&w=majority`)
+mongoose.connect(`mongodb+srv://alex:Alex9595@cluster0-6ofkv.mongodb.net/MERNPlaces?retryWrites=true&w=majority`)
     .then(() => {
 
         app.listen(5000, () => {
