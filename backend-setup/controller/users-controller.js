@@ -26,8 +26,26 @@ const dummyUsersList = [
     }
 ]
 
-const listUsers = (req, res, next) => {
-    res.status(200).json(dummyUsersList)
+const getUsers = async (req, res, next) => {
+
+    // Returns email and name 
+    // const users = await User.find({},'email name')
+
+    let users;
+
+    try {
+
+        // Return users without password property
+        users = await User.find({}, '-password')
+
+    } catch (err) {
+
+        return next(new new HttpError('Failed fetching users, please try again later', 500))
+
+    }
+
+    res.status(200).json({ users: users.map(user => user.toObject({ getters: true })) })
+
 }
 
 const signup = async (req, res, next) => {
@@ -86,23 +104,33 @@ const signup = async (req, res, next) => {
 
 }
 
-const login = (req, res, next) => {
+const login = async (req, res, next) => {
 
-    console.log(req.body)
     const { email, password } = req.body;
 
-    const identifiedUser = dummyUsersList.find(user => user.email === email);
+    // First fin any user witht the email
+    let exsistingUser;
+    try {
 
-    if (!identifiedUser || identifiedUser.password !== password) {
-        throw new HttpError('Could not identify user, credentials please try again', 401)
+        // Check if a user already has this email
+        exsistingUser = await User.findOne({ email: email })
+
+    } catch (err) {
+        const error = new HttpError('Login failed, please try again later.', 500)
+        return next(error)
     }
+
+    if (!exsistingUser || exsistingUser.password !== password) {
+        return next(new HttpError('Login failed,invalid email and or password.', 500))
+    }
+
 
     res.status(200).json({ message: 'Logged in!' })
 
 
 }
 
-exports.listUsers = listUsers;
+exports.getUsers = getUsers;
 exports.signup = signup;
 exports.login = login;
 
