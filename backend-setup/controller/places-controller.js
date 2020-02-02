@@ -140,8 +140,9 @@ const getPlaceById = async (req, res, next) => {
 const getPlaceByUserId = async (req, res, next) => {
 
     const userId = req.params.uid
-    console.log('+++++++++' + userId)
+
     let places;
+
     try {
 
         // find place that matches property and value 
@@ -198,7 +199,6 @@ const updatePlaceById = async (req, res, next) => {
 
     }
 
-
     // Make changes with new values
     placeToUpdate.title = title;
     placeToUpdate.description = description;
@@ -219,16 +219,45 @@ const updatePlaceById = async (req, res, next) => {
 
 }
 
-const deletePlaceById = (req, res, next) => {
+const deletePlaceById = async (req, res, next) => {
 
-    if (!placesList.find(place => place.id === req.params.pid)) {
-        throw new HttpError(" Could not find place to delete for that id", 404)
+    // if (!placesList.find(place => place.id === req.params.pid)) {
+    //     throw new HttpError(" Could not find place to delete for that id", 404)
+    // }
+
+    const placeId = req.params.pid
+    let placeToDelete;
+
+    // try {
+
+    //     placeToDelete = await Place.findById(placeId)
+    //     console.log(placeToDelete)
+
+    // } catch (error) {
+
+    //     return next(
+    //         new HttpError('Failed to find place to delete', 500)
+    //     )
+
+    // }
+
+    try {
+
+        // await placeToDelete.remove()
+
+        // Another way of doing it is to delete by id
+        await Place.deleteOne({ _id: placeId })
+
+    } catch (error) {
+
+        return next(
+            new HttpError('Failed to delete place', 500)
+        )
+
     }
 
-    // Return list with every item that does not have the id of place we want to delete
-    placesList = placesList.filter(place => place.id != req.params.pid)
-
     res.status(200).json({ message: 'Deleted Place' })
+
 }
 
 // module.exports would export 1 thing 
