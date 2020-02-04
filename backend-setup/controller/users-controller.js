@@ -28,8 +28,7 @@ const dummyUsersList = [
 
 const getUsers = async (req, res, next) => {
 
-    // Returns email and name 
-    // const users = await User.find({},'email name')
+
 
     let users;
 
@@ -37,6 +36,9 @@ const getUsers = async (req, res, next) => {
 
         // Return users without password property
         users = await User.find({}, '-password')
+
+        // Only returns email and name with each user
+        // const users = await User.find({},'email name')
 
     } catch (err) {
 
@@ -60,7 +62,7 @@ const signup = async (req, res, next) => {
         )
     }
 
-    const { name, email, password, places } = req.body;
+    const { name, email, password } = req.body;
 
     let exsistingUser;
     try {
@@ -78,13 +80,14 @@ const signup = async (req, res, next) => {
         return next(error)
     }
 
-    // create new user and provide a unique id
+    // Places will automatically be added when a place is created by a user
+    // 
     const newUser = new User({
         name,
         email,
         image: 'https://tinyurl.com/y2mmdwus',
         password,
-        places
+        places: []
 
     })
 

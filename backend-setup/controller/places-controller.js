@@ -1,7 +1,9 @@
 // Controller files are intended to hold logic and focus on middleware functions to be used in routes
 // ** NOTE throwing error does not work in async tasks, must use next
+const mongoose = require('mongoose')
 const Place = require('../models/place')
-
+const User = require('../models/user')
+var util = require('util')
 // To check validation from middleware
 const { validationResult } = require('express-validator')
 
@@ -12,31 +14,6 @@ const uuid = require('uuid/v4')
 const HttpError = require('../models/http-error')
 
 const getCoordinatesFromAdress = require('../util/location')
-
-// let placesList = [
-//     {
-//         id: 'p1',
-//         title: 'Empire State Building',
-//         description: 'One of the most famous sky scrapers in the world!',
-//         location: {
-//             lat: 40.7484474,
-//             lng: -73.9871516,
-//         },
-//         adress: ' 20 W 34th St, New York, NY 10001',
-//         creator: 'u1'
-//     },
-//     {
-//         id: 'p2',
-//         title: 'Empire ',
-//         description: 'One of the most scary places in the world!',
-//         location: {
-//             lat: 99.2415474,
-//             lng: -13.9501516,
-//         },
-//         adress: ' 20 W 34th St, New York, NY 10001',
-//         creator: 'u1'
-//     }
-// ]
 
 const createPlace = async (req, res, next) => {
 
@@ -58,6 +35,7 @@ const createPlace = async (req, res, next) => {
 
     let coordinates;
 
+    // try catch to handle errors from async await
     try {
 
         // Get Coordinates by providing an adress
@@ -81,7 +59,52 @@ const createPlace = async (req, res, next) => {
 
     });
 
-    // try catch to handle errors from async await
+    let user;
+
+    try {
+
+        // console.log(`USER ID:${creator}`)
+        // Check we have a user for provided creaor id
+        user = await User.findById(creator)
+        console.log(user)
+
+    } catch (error) {
+        return next(new HttpError('Creating place failed, please try again.', 500))
+    }
+
+    // If we could not find a user from the creator id
+    if (!user) {
+        return next(new HttpError('Could not find user for provided id.', 500))
+    }
+
+    try {
+
+        // TODO Come back and research Session and Transactions more in mongoose
+        // Transactoin will attempt multiple tasks but abort them all if one fails  
+
+        // Start session to start transaction
+        const sess = await mongoose.startSession();
+        sess.startTransaction();
+
+        // Add created place to Places collection and refer to current session
+        await createdPlace.save({ session: sess });
+
+        // For the places property in the found user document, push the new place we created there 
+        // push will behind the scenes establish connection between the models, 
+        // it also grabs createdplace unique id and adds it to our users places as directed by schema
+        user.places.push(createdPlace);
+
+        // Update user with new place value using save()
+        await user.save({ session: sess })
+
+        // All changes will be saved here, or cancelled if one fails
+        await sess.commitTransaction();
+
+    } catch (error) {
+        return next(new HttpError('xxxxxxCould not find user for provided id.', 500))
+    }
+
+
     try {
 
         // save Method of model to insert into DB and create unique id
