@@ -14,9 +14,25 @@ const userRoutes = require('./routes/users-routes')
     Middleware is run top to bottom, and requests are passed to next middleware with next() or if a response was sent which would satisfy request
 */
 
-// Parse recieved data no matter what request is made so we can pass it down
-// converts json to useable javascript structures
+// Parse recieved data no matter what request is made, on every request so we can pass it down
+// converts json to useable javascript structures, has next() built in
 app.use(bodyParser.json());
+
+app.use((req, res, next) => {
+
+    // Allow *(any) domain to send requests to this back end 
+    res.setHeader('Access-Control-Allow-Origin', '*')
+
+    // Specify what headers will be allowed
+    res.setHeader('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,Authorization')
+
+    // Specify the http methods that will be allowed 
+    res.setHeader('Access-Control-Allow-METHODS', 'GET, POST, PATCH, DELETE')
+
+    // Move to next middleware
+    next()
+
+});
 
 
 // excecutes on all requests (get,post,put etc) that start with http://localhost:5000/api/places

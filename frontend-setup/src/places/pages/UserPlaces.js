@@ -45,7 +45,7 @@ const UserPlaces = (props) => {
     // Will return list of places where creator matches the userId route param
     const loadedPlaces = DummyData.filter(place => place.creator === userID)
 
-    console.log(loadedPlaces)
+    // console.log(loadedPlaces)
 
     return (
 
