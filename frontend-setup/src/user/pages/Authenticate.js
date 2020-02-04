@@ -30,15 +30,49 @@ const Authenticate = props => {
             value: '',
             isValid: false
         }
- 
+
     },
         false)
 
-    const authSubmitHandler = event => {
+    const authSubmitHandler = async event => {
 
         event.preventDefault();
 
         console.log(formState.inputs)
+
+        if (isLoginMode) {
+
+
+
+        } else {
+
+            try {
+
+                // Use fetch (built in api) to make request to backend/external api
+                const response = await fetch(`http://localhost:5000/api/users/signup`, {
+                    method: "POST",
+                    headers: {           //Will tell backend what type of data it will recieve
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+
+                        // Data expected by backend/api
+                        name: formState.inputs.name.value,
+                        email: formState.inputs.email.value,
+                        password: formState.inputs.password.value
+
+                    })
+                })
+            
+                // Response won't be in json format so we parse it to be usable
+                const responseData = await response.json()
+
+                console.log(responseData)
+            } catch (error) {
+
+            }
+
+        }
 
         auth.login();
 

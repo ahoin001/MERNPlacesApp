@@ -7,9 +7,6 @@ var util = require('util')
 // To check validation from middleware
 const { validationResult } = require('express-validator')
 
-// Generates Unique Id
-const uuid = require('uuid/v4')
-
 // We created this class to not repeat code for creating errors to send to appj.js error handler
 const HttpError = require('../models/http-error')
 

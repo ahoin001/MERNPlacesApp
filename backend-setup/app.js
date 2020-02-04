@@ -6,12 +6,12 @@ const HttpError = require('./models/http-error')
 // Connnection to database
 const mongoose = require('mongoose')
 
-// Import Routers instead of cluttering this file
+// Import Routers instead of cluttering this file with different routes
 const placesRoutes = require('./routes/places-routes')
 const userRoutes = require('./routes/users-routes')
 
 /*
-    Middleware is run top to bottom, and passed to next with next() or if a response was sent which would satisfy request
+    Middleware is run top to bottom, and requests are passed to next middleware with next() or if a response was sent which would satisfy request
 */
 
 // Parse recieved data no matter what request is made so we can pass it down
@@ -46,7 +46,7 @@ app.use((error, req, res, next) => {
 
 });
 
-// Establish connection to database and then open server                 Places = name of db, will create new DB if can't find matching name
+// Establish connection to database and then open server                 MERNPlaces = name of db, will create new DB if can't find matching name
 mongoose.connect(`mongodb+srv://alex:Alex9595@cluster0-6ofkv.mongodb.net/MERNPlaces?retryWrites=true&w=majority`)
     .then(() => {
 

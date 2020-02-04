@@ -1,5 +1,5 @@
-// ** NOTE throwing error does not work in async tasks, must use next
-const uuid = require('uuid/v4')
+// ** TODO NOTE throwing error does not work in async tasks, must use next
+
 const { validationResult } = require('express-validator')
 const HttpError = require('../models/http-error')
 
