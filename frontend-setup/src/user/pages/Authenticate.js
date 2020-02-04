@@ -5,6 +5,8 @@ import Input from '../../shared/components/FormElements/Input'
 import useForm from '../../shared/components/hooks/form-hook'
 import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH, VALIDATOR_EMAIL } from "../../shared/components/Util/Validator";
 import Button from '../../shared/components/FormElements/Button';
+import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
+import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 
 import './Auth.css'
 import Card from '../../shared/components/UIElements/Card';
@@ -19,6 +21,10 @@ const Authenticate = props => {
 
     // State to determine if in Login mode or not
     const [isLoginMode, setisLoginMode] = useState(true)
+
+    const [isLoading, setIsLoading] = useState(false)
+
+    const [error, setError] = useState()
 
     // Use custom hook for formHandling our custom Input components
     const [formState, inputHandler, setFormData] = useForm({
@@ -42,11 +48,12 @@ const Authenticate = props => {
 
         if (isLoginMode) {
 
-
-
         } else {
 
             try {
+
+                // Before sending request, there will be loading shown to user to have feedback on submission
+                setIsLoading(true);
 
                 // Use fetch (built in api) to make request to backend/external api
                 const response = await fetch(`http://localhost:5000/api/users/signup`, {
@@ -63,18 +70,26 @@ const Authenticate = props => {
 
                     })
                 })
-            
+
                 // Response won't be in json format so we parse it to be usable
                 const responseData = await response.json()
-
                 console.log(responseData)
-            } catch (error) {
+
+                // Loading will be complete one async task above is complete
+                setIsLoading(false)
+
+                auth.login();
+
+            } catch (err) {
+
+                // 
+                setError(err.message || 'Something went wrong with sign up.')
 
             }
 
         }
 
-        auth.login();
+
 
     }
 
@@ -116,6 +131,8 @@ const Authenticate = props => {
     return (
 
         <Card className="authentication">
+
+            {isLoading && <LoadingSpinner asOverlay/>}
 
             <h2> Login Required</h2>
             <hr />
