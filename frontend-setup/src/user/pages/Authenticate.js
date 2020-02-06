@@ -92,6 +92,10 @@ const Authenticate = props => {
                 // ANY ERROR THROWN IS AUTOMATICALLY AN ARGUMENT FOR CATCH NAME DOES NOT MATTER
             } catch (err) {
 
+                 // Loading will be complete if process was stopped by error
+                 setIsLoading(false)
+
+                // Save the error message to state to rerender and trigger error modal
                 setError(err.message || 'Something went wrong with sign up.')
 
             }
@@ -110,7 +114,7 @@ const Authenticate = props => {
 
             setFormData(
                 {
-
+                    // Carry over inputs that were already made
                     ...formState.inputs,
 
                     // TODO set to undefined to drop property from state
@@ -132,16 +136,23 @@ const Authenticate = props => {
                 false)
         }
 
-        // argument will toggle loginMode
+        // toggle loginMode
         setisLoginMode(prevMode => !prevMode)
     }
+
+    // Clears errors from state
+    const errorHandler = () => {
+        setError(null)
+    }
+
 
 
     return (
 
         <React.Fragment>
 
-            {/* <ErrorModal error={}/> */}
+            {/* Error from state */}
+            <ErrorModal error={error} onClear={errorHandler} />
 
             <Card className="authentication">
 

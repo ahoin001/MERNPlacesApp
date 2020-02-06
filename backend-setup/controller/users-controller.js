@@ -59,7 +59,6 @@ const signup = async (req, res, next) => {
     }
 
     // Places will automatically be added when a place is created by a user
-    // 
     const newUser = new User({
         name,
         email,
