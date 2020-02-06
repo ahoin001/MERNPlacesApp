@@ -75,14 +75,23 @@ const Authenticate = props => {
                 const responseData = await response.json()
                 console.log(responseData)
 
+                // TODO NOTE* Fetch will not go to catch block even when response contains 404 or 500's error
+                // So manually throw error if response has an error attatched, check by .ok property
+                if (!responseData.ok) {
+
+                    // The error attatched to the response can be found in app.js of back end
+                    // Error constructor accepts a message argument for error message
+                    throw new Error(responseData.message)
+                }
+
                 // Loading will be complete one async task above is complete
                 setIsLoading(false)
 
                 auth.login();
 
+                // ANY ERROR THROWN IS AUTOMATICALLY AN ARGUMENT FOR CATCH NAME DOES NOT MATTER
             } catch (err) {
 
-                // 
                 setError(err.message || 'Something went wrong with sign up.')
 
             }
@@ -130,55 +139,60 @@ const Authenticate = props => {
 
     return (
 
-        <Card className="authentication">
+        <React.Fragment>
 
-            {isLoading && <LoadingSpinner asOverlay/>}
+            {/* <ErrorModal error={}/> */}
 
-            <h2> Login Required</h2>
-            <hr />
+            <Card className="authentication">
 
-            <form onSubmit={authSubmitHandler}>
+                {isLoading && <LoadingSpinner asOverlay />}
 
-                {!isLoginMode &&
+                <h2> Login Required</h2>
+                <hr />
+
+                <form onSubmit={authSubmitHandler}>
+
+                    {!isLoginMode &&
+                        <Input
+                            id='name'
+                            element='input'
+                            type='text'
+                            label='Name'
+                            validators={[VALIDATOR_REQUIRE()]}
+                            onInput={inputHandler}
+                            errorText='Please Enter a name'
+                        />}
+
                     <Input
-                        id='name'
+                        id='email'
+                        element='input'
+                        type='email'
+                        label='Email'
+                        validators={[VALIDATOR_EMAIL()]}
+                        onInput={inputHandler}
+                        errorText='Please Enter a valid email'
+                    />
+
+                    <Input
+                        id='password'
                         element='input'
                         type='text'
-                        label='Name'
-                        validators={[VALIDATOR_REQUIRE()]}
+                        label='Password'
+                        validators={[VALIDATOR_MINLENGTH(5)]}
                         onInput={inputHandler}
-                        errorText='Please Enter a name'
-                    />}
+                        errorText='Please Enter a valid password: Must Be at least 5 characters'
+                    />
 
-                <Input
-                    id='email'
-                    element='input'
-                    type='email'
-                    label='Email'
-                    validators={[VALIDATOR_EMAIL()]}
-                    onInput={inputHandler}
-                    errorText='Please Enter a valid email'
-                />
+                    <Button disabled={!formState.isValid}>
+                        {isLoginMode ? 'LOGIN' : 'SIGN UP'}
+                    </Button>
 
-                <Input
-                    id='password'
-                    element='input'
-                    type='text'
-                    label='Password'
-                    validators={[VALIDATOR_MINLENGTH(5)]}
-                    onInput={inputHandler}
-                    errorText='Please Enter a valid password: Must Be at least 5 characters'
-                />
+                </form>
 
-                <Button disabled={!formState.isValid}>
-                    {isLoginMode ? 'LOGIN' : 'SIGN UP'}
-                </Button>
+                <Button inverse onClick={switchModeHandler}> SWITCH TO {isLoginMode ? 'SIGN UP' : 'LOGIN'} </Button>
 
-            </form>
+            </Card></React.Fragment>
 
-            <Button inverse onClick={switchModeHandler}> SWITCH TO {isLoginMode ? 'SIGN UP' : 'LOGIN'} </Button>
-
-        </Card>
 
     )
 
