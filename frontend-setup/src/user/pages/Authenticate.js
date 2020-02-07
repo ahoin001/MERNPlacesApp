@@ -44,19 +44,14 @@ const Authenticate = props => {
 
         event.preventDefault();
 
-        console.log(formState.inputs)
+        // Before sending request, setstate to have loading shown to user to have feedback on submission
+        setIsLoading(true);
 
         if (isLoginMode) {
 
-        } else {
-
             try {
 
-                // Before sending request, there will be loading shown to user to have feedback on submission
-                setIsLoading(true);
-
-                // Use fetch (built in api) to make request to backend/external api
-                const response = await fetch(`http://localhost:5000/api/users/signup`, {
+                const response = await fetch(`http://localhost:5000/api/users/login`, {
                     method: "POST",
                     headers: {           //Will tell backend what type of data it will recieve
                         'Content-Type': 'application/json'
@@ -64,7 +59,6 @@ const Authenticate = props => {
                     body: JSON.stringify({
 
                         // Data expected by backend/api
-                        name: formState.inputs.name.value,
                         email: formState.inputs.email.value,
                         password: formState.inputs.password.value
 
@@ -82,27 +76,67 @@ const Authenticate = props => {
                     // The error attatched to the response can be found in app.js of back end
                     // Error constructor accepts a message argument for error message
                     throw new Error(responseData.message)
+
                 }
 
                 // Loading will be complete one async task above is complete
                 setIsLoading(false)
 
+                // Login using context so all components listening will know
                 auth.login();
 
                 // ANY ERROR THROWN IS AUTOMATICALLY AN ARGUMENT FOR CATCH NAME DOES NOT MATTER
             } catch (err) {
 
-                 // Loading will be complete if process was stopped by error
-                 setIsLoading(false)
+                // Loading will be complete if process was stopped by error
+                setIsLoading(false)
 
                 // Save the error message to state to rerender and trigger error modal
+                setError(err.message || 'Something went wrong with login.')
+
+            }
+
+        } else {
+
+            // Attempt signup
+            try {
+
+                setIsLoading(true);
+
+                const response = await fetch(`http://localhost:5000/api/users/signup`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+
+                        name: formState.inputs.name.value,
+                        email: formState.inputs.email.value,
+                        password: formState.inputs.password.value
+
+                    })
+                })
+
+                const responseData = await response.json()
+                // console.log(responseData)
+
+                if (!responseData.ok) {
+
+                    throw new Error(responseData.message)
+
+                }
+
+                setIsLoading(false)
+                auth.login();
+
+            } catch (err) {
+
+                setIsLoading(false)
                 setError(err.message || 'Something went wrong with sign up.')
 
             }
 
         }
-
-
 
     }
 
@@ -202,8 +236,9 @@ const Authenticate = props => {
 
                 <Button inverse onClick={switchModeHandler}> SWITCH TO {isLoginMode ? 'SIGN UP' : 'LOGIN'} </Button>
 
-            </Card></React.Fragment>
+            </Card>
 
+        </React.Fragment>
 
     )
 

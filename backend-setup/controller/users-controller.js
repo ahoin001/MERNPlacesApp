@@ -107,7 +107,6 @@ const login = async (req, res, next) => {
 
     res.status(200).json({ message: 'Logged in!' })
 
-
 }
 
 exports.getUsers = getUsers;
