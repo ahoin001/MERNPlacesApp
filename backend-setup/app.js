@@ -49,7 +49,7 @@ app.use((req, res, next) => {
 });
 
 
-// In middleware functions with 4 params, we have access to error , only excecuted on requests error was thrown
+// In middleware functions with 4 params, we have access to error , only excecuted on reesponses where error was thrown
 // error will only exccute if any middleware before it has an error
 app.use((error, req, res, next) => {
 
@@ -58,7 +58,6 @@ app.use((error, req, res, next) => {
     }
 
     res.status(error.code || 500)
-
 
     // TODO NOTE* If response is error, notice in front end that .message property will be referring to this error object message
     // Message is passed in from the controllers that throw our httperror object. httperror extends error so its messgage property works here  
