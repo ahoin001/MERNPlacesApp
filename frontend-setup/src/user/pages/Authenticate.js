@@ -65,19 +65,19 @@ const Authenticate = props => {
                     })
                 })
 
-                // Response won't be in json format so we parse it to be usable
-                const responseData = await response.json()
-                console.log(responseData)
-
                 // TODO NOTE* Fetch will not go to catch block even when response contains 404 or 500's error
                 // So manually throw error if response has an error attatched, check by .ok property
-                if (!responseData.ok) {
+                if (!response.ok) {
 
                     // The error attatched to the response can be found in app.js of back end
                     // Error constructor accepts a message argument for error message
                     throw new Error(responseData.message)
 
                 }
+
+                // Response won't be in json format so we parse it to be usable
+                const responseData = await response.json()
+                console.log(responseData)
 
                 // Loading will be complete one async task above is complete
                 setIsLoading(false)
@@ -87,13 +87,8 @@ const Authenticate = props => {
 
                 // ANY ERROR THROWN IS AUTOMATICALLY AN ARGUMENT FOR CATCH NAME DOES NOT MATTER
             } catch (err) {
-
-                // Loading will be complete if process was stopped by error
-                setIsLoading(false)
-
-                // Save the error message to state to rerender and trigger error modal
-                setError(err.message || 'Something went wrong with login.')
-
+                setIsLoading(false);
+                setError(err.message || 'Something went wrong, please try again.');
             }
 
         } else {

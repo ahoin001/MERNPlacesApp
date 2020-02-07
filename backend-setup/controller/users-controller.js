@@ -101,11 +101,11 @@ const login = async (req, res, next) => {
     }
 
     if (!exsistingUser || exsistingUser.password !== password) {
-        return next(new HttpError('Login failed,invalid email and or password.', 500))
+        return next(new HttpError('Login failed,invalid email and or password.', 401 ))
     }
 
 
-    res.status(200).json({ message: 'Logged in!' })
+    res.json({ message: 'Logged in!' })
 
 }
 
