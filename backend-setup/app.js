@@ -49,8 +49,8 @@ app.use((req, res, next) => {
 });
 
 
-// In middleware functions with 4 params, we have access to error , only excecuted on reesponses where error was thrown
-// error will only exccute if any middleware before it has an error
+// In middleware functions with 4 params, we have access to error , only excecuted by responses where error was thrown
+// If any errors are thrown in middleware response is json with error message accessible with message property
 app.use((error, req, res, next) => {
 
     if (res.headerSent) {

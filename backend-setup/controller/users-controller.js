@@ -62,7 +62,7 @@ const signup = async (req, res, next) => {
     const newUser = new User({
         name,
         email,
-        image: 'https://tinyurl.com/y2mmdwus',
+        image: 'https://www.smashbros.com/assets_v2/img/top/hero05_en.jpg',
         password,
         places: []
 

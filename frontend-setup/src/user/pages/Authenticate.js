@@ -119,7 +119,7 @@ const Authenticate = props => {
                 const responseData = await response.json()
                 // console.log(responseData)
 
-                if (!responseData.ok) {
+                if (!response.ok) {
 
                     throw new Error(responseData.message)
 
