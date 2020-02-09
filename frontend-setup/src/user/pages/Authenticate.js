@@ -7,6 +7,7 @@ import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH, VALIDATOR_EMAIL } from "../../s
 import Button from '../../shared/components/FormElements/Button';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
+import { useHttpClient } from '../../shared/components/hooks/http-hook';
 
 import './Auth.css'
 import Card from '../../shared/components/UIElements/Card';
@@ -16,15 +17,15 @@ import Card from '../../shared/components/UIElements/Card';
 */
 const Authenticate = props => {
 
+
+
     // Import our context then use it with hook
     const auth = useContext(AuthContext);
 
     // State to determine if in Login mode or not
     const [isLoginMode, setisLoginMode] = useState(true)
 
-    const [isLoading, setIsLoading] = useState(false)
-
-    const [error, setError] = useState()
+    const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
     // Use custom hook for formHandling our custom Input components
     const [formState, inputHandler, setFormData] = useForm({
@@ -44,55 +45,31 @@ const Authenticate = props => {
 
         event.preventDefault();
 
-        // Before sending request, setstate to have loading shown to user to have feedback on submission
-        setIsLoading(true);
-
         if (isLoginMode) {
 
             try {
 
-                const response = await fetch(`http://localhost:5000/api/users/login`, {
-                    method: "POST",
-                    headers: {           //Will tell backend what type of data it will recieve
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
+                // From hook, use fetch call to post data for login, if no errors, will proceed to login
+                await sendRequest(
+                    `http://localhost:5000/api/users/login`,
+                    "POST",
+                    JSON.stringify({
 
                         // Data expected by backend/api
                         email: formState.inputs.email.value,
                         password: formState.inputs.password.value
 
-                    })
-                })
-
-                // Response won't be in json format so we parse it to be usable
-                const responseData = await response.json()
-                console.log(responseData)
-
-                // TODO NOTE* Fetch will not go to catch block even when response contains 404 or 500's error
-                // So manually throw error if response has an error attatched, checked by .ok property
-                if (!response.ok) {
-
-                    // Create error with errror message from the response ( In backend the response has .message property with error description)
-                    // Our controllers throw httperror objects with message that can be called for specific error messages
-                    throw new Error(responseData.message)
-
-                }
-
-                // Loading will be complete one async task above is complete
-                setIsLoading(false)
+                    }),
+                    {   //Header , Will tell backend what type of data it will recieve
+                        'Content-Type': 'application/json'
+                    }
+                )
 
                 // Login using context so all components listening will know
                 auth.login();
 
-                // ANY ERROR THROWN IS AUTOMATICALLY AN ARGUMENT FOR CATCH NAME DOES NOT MATTER
-            } catch (err) {
+            } catch (error) {
 
-                // Stop loading and provide error message for error modal that calls error from state
-                setIsLoading(false);
-            
-                setError(err.message || 'Something went wrong, please try again.');
-            
             }
 
         } else {
@@ -100,38 +77,24 @@ const Authenticate = props => {
             // Attempt signup
             try {
 
-                setIsLoading(true);
-
-                const response = await fetch(`http://localhost:5000/api/users/signup`, {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
+                await sendRequest(
+                    `http://localhost:5000/api/users/signup`,
+                    "POST",
+                    JSON.stringify({
 
                         name: formState.inputs.name.value,
                         email: formState.inputs.email.value,
                         password: formState.inputs.password.value
 
-                    })
-                })
+                    }),
+                    {
+                        'Content-Type': 'application/json'
+                    }
+                )
 
-                const responseData = await response.json()
-                // console.log(responseData)
-
-                if (!response.ok) {
-
-                    throw new Error(responseData.message)
-
-                }
-
-                setIsLoading(false)
                 auth.login();
 
             } catch (err) {
-
-                setIsLoading(false)
-                setError(err.message || 'Something went wrong with sign up.')
 
             }
 
@@ -173,19 +136,12 @@ const Authenticate = props => {
         setisLoginMode(prevMode => !prevMode)
     }
 
-    // Clears errors from state
-    const errorHandler = () => {
-        setError(null)
-    }
-
-
-
     return (
 
         <React.Fragment>
 
             {/* Error from state */}
-            <ErrorModal error={error} onClear={errorHandler} />
+            <ErrorModal error={error} onClear={clearError} />
 
             <Card className="authentication">
 
