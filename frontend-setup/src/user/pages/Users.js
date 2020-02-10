@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import UsersList from '../components/UsersList'
 import ErrorModal from '../../shared/components/UIElements/ErrorModal'
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner'
+import { useHttpClient } from '../../shared/components/hooks/http-hook'
 
 /*
     Page that displays list of users
@@ -9,57 +10,40 @@ import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner'
 
 const Users = () => {
 
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState()
     const [loadedUsers, setLoadedUsers] = useState()
 
+    const { sendRequest, isLoading, error, clearError } = useHttpClient()
 
-    // set useEffect in a way this will only run time and not on every rerender
+    // set useEffect in a way that it will only run one time per visit and not on every rerender
     // useEffect DOES NOT want a function that returns a promise, so cant use async/await directly 
     useEffect(() => {
 
         // use IIFE (Immediately Invoked Function Expression) and apply async for async task
-        const sendRequest = async () => {
+        const fetchUsers = async () => {
 
             try {
 
                 // By default fetch is get request, and does not requre headers or data to post 
-                const response = await fetch(`http://localhost:5000/api/users`);
-
-                const responseData = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(responseData.message)
-                }
+                const responseData = await sendRequest(`http://localhost:5000/api/users`);
 
                 // Can check response from backend for why we picked users property in response
                 setLoadedUsers(responseData.users)
 
             } catch (error) {
 
-                // message property of error object thrown in try
-                setError(error.message)
-
             }
-
-            setIsLoading(false)
 
         }
 
-        sendRequest();
+        fetchUsers();
 
-    }, [])
-
-    const errorHandler = () => {
-        setError(null)
-    }
-
+    }, [sendRequest]) //Because of useCallback on custom hook, the same reference/instance of this function is always used and prevents infinite loop
 
     return (
 
         <React.Fragment>
 
-            <ErrorModal error={error} onClear={errorHandler} />
+            <ErrorModal error={error} onClear={clearError} />
             {isLoading && (
                 <div className="center">
 
@@ -74,8 +58,6 @@ const Users = () => {
             />}
 
         </React.Fragment>
-
-
 
     )
 }

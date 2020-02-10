@@ -53,7 +53,7 @@ const Authenticate = props => {
                 await sendRequest(
                     `http://localhost:5000/api/users/login`,
                     "POST",
-                    JSON.stringify({
+                    JSON.stringify({ //format object to json for request
 
                         // Data expected by backend/api
                         email: formState.inputs.email.value,
@@ -74,7 +74,6 @@ const Authenticate = props => {
 
         } else {
 
-            // Attempt signup
             try {
 
                 await sendRequest(
