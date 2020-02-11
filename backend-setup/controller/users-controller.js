@@ -80,7 +80,8 @@ const signup = async (req, res, next) => {
 
     }
 
-    res.status(201).json({ newUser: newUser.toObject({ getters: true }) })
+    // return object with user data that can be used
+    res.status(201).json({ user: newUser.toObject({ getters: true }) })
 
 }
 
@@ -101,11 +102,14 @@ const login = async (req, res, next) => {
     }
 
     if (!exsistingUser || exsistingUser.password !== password) {
-        return next(new HttpError('Login failed,invalid email and or password.', 401 ))
+        return next(new HttpError('Login failed,invalid email and or password.', 401))
     }
 
-
-    res.json({ message: 'Logged in!' })
+    // return object with user data that can be used
+    res.json({
+        message: 'Logged in!',
+        user: exsistingUser.toObject({ getters: true })
+    })
 
 }
 

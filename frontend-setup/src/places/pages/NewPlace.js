@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import useForm from '../../shared/components/hooks/form-hook'
 import Input from '../../shared/components/FormElements/Input'
 import Button from '../../shared/components/FormElements/Button';
 import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from "../../shared/components/Util/Validator";
+
+import { useHttpClient } from '../../shared/components/hooks/http-hook'
+import AuthContext  from '../../shared/components/context/auth-context'
+
 
 import './PlaceForm.css'
 
@@ -11,6 +15,11 @@ import './PlaceForm.css'
     Page component where user can fill out form and add a new place
 */
 export const NewPlace = () => {
+
+    // Get Access to information in our custom context
+    const auth = useContext(AuthContext);
+
+    const { sendRequest, isLoading, error, clearError } = useHttpClient()
 
     // Custom Hook needs object of inputs, and initial form validity
     const [formState, inputHandler] = useForm({
@@ -37,6 +46,19 @@ export const NewPlace = () => {
     const placeSubmitHandler = event => {
         // Prevent form from refreshing page which would ruin react render
         event.preventDefault();
+
+        sendRequest('http://localhost5000/api/places',
+            'POST',
+            JSON.stringify({
+                title: formState.inputs.title,
+                description: formState.inputs.description,
+                adress: formState.inputs.adress,
+                creator: auth.userId // gets unique userId from context
+            }),
+            {
+                'Content-Type': 'applicatoin/json'
+            }
+        )
 
         console.log(formState.inputs) // Will be able to send this to back end
     }

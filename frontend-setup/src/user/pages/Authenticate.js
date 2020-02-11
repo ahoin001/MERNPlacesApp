@@ -17,8 +17,6 @@ import Card from '../../shared/components/UIElements/Card';
 */
 const Authenticate = props => {
 
-
-
     // Import our context then use it with hook
     const auth = useContext(AuthContext);
 
@@ -50,7 +48,7 @@ const Authenticate = props => {
             try {
 
                 // From hook, use fetch call to post data for login, if no errors, will proceed to login
-                await sendRequest(
+                const responseData = await sendRequest(
                     `http://localhost:5000/api/users/login`,
                     "POST",
                     JSON.stringify({ //format object to json for request
@@ -65,8 +63,8 @@ const Authenticate = props => {
                     }
                 )
 
-                // Login using context so all components listening will know
-                auth.login();
+                // Login using context so all components listening will know what user is signed in
+                auth.login(responseData.user.id);
 
             } catch (error) {
 
@@ -76,7 +74,7 @@ const Authenticate = props => {
 
             try {
 
-                await sendRequest(
+                const responseData = await sendRequest(
                     `http://localhost:5000/api/users/signup`,
                     "POST",
                     JSON.stringify({
@@ -91,7 +89,7 @@ const Authenticate = props => {
                     }
                 )
 
-                auth.login();
+                auth.login(responseData.user.id)
 
             } catch (err) {
 

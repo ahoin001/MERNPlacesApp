@@ -22,12 +22,20 @@ const App = () => {
   */
   const [isLoggedIn, setisLoggedIn] = useState(false)
 
-  const login = useCallback(() => {
-    setisLoggedIn(true)
+  // Will be used in context to keep track of unique users signed in
+  const [userId, setUserId] = useState(false)
+
+  const login = useCallback((uid) => {
+
+    setisLoggedIn(true);
+    // 
+    setUserId(uid);
   }, [])
 
   const logout = useCallback(() => {
     setisLoggedIn(false)
+    // 
+    setUserId(null);
   }, []
   )
 
@@ -90,7 +98,12 @@ const App = () => {
 
     // Context Object has a react property called Provider
     // It allows consuming components to 'listen' to context changes.
-    <AuthContext.Provider value={{ isLoggedIn: isLoggedIn, login: login, logout: logout }}>
+    <AuthContext.Provider value={{
+      isLoggedIn: isLoggedIn,
+      userId: userId,
+      login: login,
+      logout: logout
+    }}>
 
       <Router>
 
