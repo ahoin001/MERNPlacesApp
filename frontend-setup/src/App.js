@@ -51,15 +51,19 @@ const App = () => {
       <Switch>
 
         {/* path is url received, child is component that will be returned, exact makes sure to only provide if match is exact */}
+        <Route path="/" exact>
+          <Users />
+        </Route>
+        <Route path="/:userId/places" exact>
+          <UserPlaces />
+        </Route>
         <Route path="/places/new" exact>
           <NewPlace />
         </Route>
-
-        <Route path="/places/:placeId" exact>
+        <Route path="/places/:placeId">
           <UpdatePlace />
         </Route>
-
-        <Redirect to='/' />
+        <Redirect to="/" />
 
       </Switch>
 

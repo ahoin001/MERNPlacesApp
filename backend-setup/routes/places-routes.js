@@ -16,24 +16,31 @@ router.get('/:pid', placesControllers.getPlaceById);
 router.get('/user/:uid', placesControllers.getPlaceByUserId);
 
 // Add validation checks on request
-router.post('/createplace',
-    [check('title')
-        .not()
-        .isEmpty(),
-    check('description')
-        .isLength({ min: 5 }),
-    check('adress')
-        .not()
-        .isEmpty()
-    ], placesControllers.createPlace)
+router.post(
+    '/',
+    [
+        check('title')
+            .not()
+            .isEmpty(),
+        check('description').isLength({ min: 5 }),
+        check('address')
+            .not()
+            .isEmpty()
+    ],
+    placesControllers.createPlace
+);
+
 
 router.patch('/:pid',
-    [check('title')
-        .not()
-        .isEmpty(),
-    check('description')
-        .isLength({ min: 5 })
-    ], placesControllers.updatePlaceById)
+    [
+        check('title')
+            .not()
+            .isEmpty(),
+        check('description')
+            .isLength({ min: 5 })
+    ],
+    placesControllers.updatePlaceById
+)
 
 router.delete('/:pid', placesControllers.deletePlaceById);
 // Export Router Object that has our routes

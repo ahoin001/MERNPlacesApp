@@ -63,8 +63,9 @@ const Authenticate = props => {
                     }
                 )
 
+                console.log(responseData.user._id)
                 // Login using context so all components listening will know what user is signed in
-                auth.login(responseData.user.id);
+                auth.login(responseData.user._id);
 
             } catch (error) {
 
@@ -89,7 +90,7 @@ const Authenticate = props => {
                     }
                 )
 
-                auth.login(responseData.user.id)
+                auth.login(responseData.user._id)
 
             } catch (err) {
 

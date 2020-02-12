@@ -3,13 +3,17 @@ import React, { useContext } from 'react'
 import useForm from '../../shared/components/hooks/form-hook'
 import Input from '../../shared/components/FormElements/Input'
 import Button from '../../shared/components/FormElements/Button';
-import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from "../../shared/components/Util/Validator";
+import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from "../../shared/components/Util/Validator"
+import ErrorModal from '../../shared/components/UIElements/ErrorModal';
+
+
 
 import { useHttpClient } from '../../shared/components/hooks/http-hook'
-import AuthContext  from '../../shared/components/context/auth-context'
+import AuthContext from '../../shared/components/context/auth-context'
 
 
 import './PlaceForm.css'
+import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 
 /*
     Page component where user can fill out form and add a new place
@@ -34,7 +38,7 @@ export const NewPlace = () => {
             value: '',
             isValid: false
         },
-        adress: {
+        address: {
             value: '',
             isValid: false
         }
@@ -43,69 +47,87 @@ export const NewPlace = () => {
         false
     )
 
-    const placeSubmitHandler = event => {
+    const placeSubmitHandler = async event => {
+
         // Prevent form from refreshing page which would ruin react render
         event.preventDefault();
 
-        sendRequest('http://localhost5000/api/places',
-            'POST',
-            JSON.stringify({
-                title: formState.inputs.title,
-                description: formState.inputs.description,
-                adress: formState.inputs.adress,
-                creator: auth.userId // gets unique userId from context
-            }),
-            {
-                'Content-Type': 'applicatoin/json'
-            }
-        )
+        try {
 
-        console.log(formState.inputs) // Will be able to send this to back end
+            await sendRequest('http://localhost:5000/api/places/',
+                'POST',
+                JSON.stringify({
+                    title: formState.inputs.title,
+                    address: formState.inputs.address,
+                    description: formState.inputs.description,
+                    creator: auth.userId // gets unique userId from context
+                }),
+                {
+                    'Content-Type': 'application/json'
+                }
+            )
+
+        } catch (error) {
+            // errors handled in hook using send request
+        }
+
+
+        // console.log(formState.inputs) // Will be able to send this to back end
     }
 
 
     return (
-        <form className="place-form" onSubmit={placeSubmitHandler}>
 
-            {/* All Inputs change different properties of the same state */}
+        <React.Fragment>
 
-            <Input
-                id='title'
-                element='input'
-                type='text'
-                label='Title'
-                // VALIDATOR CHECKS IF INPUT IS EMPTY 
-                validators={[VALIDATOR_REQUIRE()]}
-                onInput={inputHandler}
-                errorText='Please Enter a valid title'
-            />
+            <ErrorModal error={error} onClear={clearError} />>
 
-            <Input
-                id='adress'
-                element='input'
-                type='text'
-                label='Adress'
-                // VALIDATOR CHECKS IF INPUT IS EMPTY 
-                validators={[VALIDATOR_REQUIRE()]}
-                onInput={inputHandler}
-                errorText='Please Enter a valid adress'
-            />
+            {isLoading && <LoadingSpinner asOverlay />}
 
-            <Input
-                id='description'
-                element='textarea'
-                label='Description'
-                // VALIDATOR CHECKS IF INPUT IS EMPTY 
-                validators={[VALIDATOR_MINLENGTH(5)]}
-                errorText='Please Enter a valid description(at least 5 characters).'
-                onInput={inputHandler}
-            />
+            <form className="place-form" onSubmit={placeSubmitHandler}>
 
-            <Button type='submit' disabled={!formState.isValid}>
-                ADD PLACE
-            </Button>
+                {/* All Inputs change different properties of the same state */}
 
-        </form>
+                <Input
+                    id='title'
+                    element='input'
+                    type='text'
+                    label='Title'
+                    // VALIDATOR CHECKS IF INPUT IS EMPTY 
+                    validators={[VALIDATOR_REQUIRE()]}
+                    onInput={inputHandler}
+                    errorText='Please Enter a valid title'
+                />
+
+                <Input
+                    id='description'
+                    element='textarea'
+                    label='Description'
+                    // VALIDATOR CHECKS IF INPUT IS EMPTY 
+                    validators={[VALIDATOR_MINLENGTH(5)]}
+                    errorText='Please Enter a valid description(at least 5 characters).'
+                    onInput={inputHandler}
+                />
+                
+                <Input
+                    id='address'
+                    element='input'
+                    type='text'
+                    label='Adress'
+                    // VALIDATOR CHECKS IF INPUT IS EMPTY 
+                    validators={[VALIDATOR_REQUIRE()]}
+                    onInput={inputHandler}
+                    errorText='Please Enter a valid address'
+                />
+
+                <Button type='submit' disabled={!formState.isValid}>
+                    ADD PLACE
+                </Button>
+
+            </form>
+
+        </React.Fragment>
+
     )
 
 }
