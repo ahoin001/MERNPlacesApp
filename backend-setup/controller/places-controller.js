@@ -17,65 +17,68 @@ const createPlace = async (req, res, next) => {
     // 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return next(
-        new HttpError('Invalid inputs passed, please check your data.', 422)
-      );
+        return next(
+            new HttpError('Invalid inputs passed, please check your data.', 422)
+        );
     }
-  
+
     const { title, description, address, creator } = req.body;
-  
+
+    console.log(`ADRESS RECIEVED IN BACK END: `,address)
+
     let coordinates;
     try {
-      coordinates = await getCoordinatesFromAdress(address);
+        coordinates = await getCoordinatesFromAdress(address);
     } catch (error) {
-      return next(error);
+        return next(error);
     }
-  
+
     const createdPlace = new Place({
-      title,
-      description,
-      address,
-      location: coordinates,
-      image:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Empire_State_Building_%28aerial_view%29.jpg/400px-Empire_State_Building_%28aerial_view%29.jpg', // => File Upload module, will be replaced with real image url
-      creator
+        title,
+        description,
+        address,
+        location: coordinates,
+        image:
+            'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Empire_State_Building_%28aerial_view%29.jpg/400px-Empire_State_Building_%28aerial_view%29.jpg', // => File Upload module, will be replaced with real image url
+        creator
     });
-  
+
     let user;
     try {
-      user = await User.findById(creator);
+        user = await User.findById(creator);
     } catch (err) {
-      const error = new HttpError(
-        'Failed to match current user, please try again.',
-        500
-      );
-      return next(error);
+        const error = new HttpError(
+            'Failed to match current user, please try again.',
+            500
+        );
+        return next(error);
     }
-  
+
     if (!user) {
-      const error = new HttpError('Could not find user for provided id.', 404);
-      return next(error);
+        const error = new HttpError('Could not find user for provided id.', 404);
+        return next(error);
     }
-  
-    console.log(user);
-  
+
+    console.log(`@@@@@@@@@@@@@ THE USER CREATING PLACE: `,user);
+    console.log(`############# THE PLACE BEING CREATED: `,createdPlace);
+
     try {
-      const sess = await mongoose.startSession();
-      sess.startTransaction();
-      await createdPlace.save({ session: sess }); 
-      user.places.push(createdPlace); 
-      await user.save({ session: sess }); 
-      await sess.commitTransaction();
+        const sess = await mongoose.startSession();
+        sess.startTransaction();
+        await createdPlace.save({ session: sess });
+        user.places.push(createdPlace);
+        await user.save({ session: sess });
+        await sess.commitTransaction();
     } catch (err) {
-      const error = new HttpError(
-        'Creating place failed, please try again.',
-        500
-      );
-      return next(error);
+        const error = new HttpError(
+            'Transaction failed, please try again.',
+            500
+        );
+        return next(error);
     }
-  
+
     res.status(201).json({ place: createdPlace });
-  };
+};
 
 const getPlaceById = async (req, res, next) => {
 

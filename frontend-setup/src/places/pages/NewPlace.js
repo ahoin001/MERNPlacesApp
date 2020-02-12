@@ -1,19 +1,21 @@
 import React, { useContext } from 'react'
 
-import useForm from '../../shared/components/hooks/form-hook'
 import Input from '../../shared/components/FormElements/Input'
 import Button from '../../shared/components/FormElements/Button';
-import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from "../../shared/components/Util/Validator"
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
+import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 
+import {
+    VALIDATOR_REQUIRE,
+    VALIDATOR_MINLENGTH
+} from "../../shared/components/Util/Validator"
 
-
+import useForm from '../../shared/components/hooks/form-hook'
 import { useHttpClient } from '../../shared/components/hooks/http-hook'
+
 import AuthContext from '../../shared/components/context/auth-context'
 
-
 import './PlaceForm.css'
-import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 
 /*
     Page component where user can fill out form and add a new place
@@ -54,12 +56,15 @@ export const NewPlace = () => {
 
         try {
 
+            console.log(`&&&&&&&&&&&&&INPUTS BEING SENT TO CREATE PLACE: `,formState.inputs)
+            console.log(`&&&&&&&&&&&&&INPUTS BEING SENT TO CREATE PLACE: `,formState.inputs.address.value)
+
             await sendRequest('http://localhost:5000/api/places/',
                 'POST',
                 JSON.stringify({
-                    title: formState.inputs.title,
-                    address: formState.inputs.address,
-                    description: formState.inputs.description,
+                    title: formState.inputs.title.value,
+                    description: formState.inputs.description.value,
+                    address: formState.inputs.address.value,
                     creator: auth.userId // gets unique userId from context
                 }),
                 {
@@ -92,7 +97,7 @@ export const NewPlace = () => {
                     id='title'
                     element='input'
                     type='text'
-                    label='Title'
+                    label='CUSBITOM'
                     // VALIDATOR CHECKS IF INPUT IS EMPTY 
                     validators={[VALIDATOR_REQUIRE()]}
                     onInput={inputHandler}
@@ -108,7 +113,7 @@ export const NewPlace = () => {
                     errorText='Please Enter a valid description(at least 5 characters).'
                     onInput={inputHandler}
                 />
-                
+
                 <Input
                     id='address'
                     element='input'
