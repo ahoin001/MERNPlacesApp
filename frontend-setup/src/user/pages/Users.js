@@ -14,6 +14,7 @@ const Users = () => {
 
     const { sendRequest, isLoading, error, clearError } = useHttpClient()
 
+    // TODO useEffect async properly with callback 
     // set useEffect in a way that it will only run one time per visit and not on every rerender
     // useEffect DOES NOT want a function that returns a promise, so cant use async/await directly 
     useEffect(() => {

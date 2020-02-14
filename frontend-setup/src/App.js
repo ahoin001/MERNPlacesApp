@@ -47,7 +47,7 @@ const App = () => {
   if (isLoggedIn) {
     routes = (
 
-      // Switch will render first matching path, Router would possibly render multiple (ex/ /places/new and /places/:placeId would both render
+      // Switch will render first matching path, Router would possibly render multiple (ex: /places/new and /places/:placeId would both render
       <Switch>
 
         {/* path is url received, child is component that will be returned, exact makes sure to only provide if match is exact */}

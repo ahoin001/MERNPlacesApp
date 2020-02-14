@@ -50,7 +50,7 @@ export const NewPlace = () => {
         false
     )
 
-    //  hook returns history object that can be used to redirect
+    //  hook returns history object that can be used to redirect and go back and forth visited links
     const history = useHistory()
 
     const placeSubmitHandler = async event => {
@@ -59,9 +59,6 @@ export const NewPlace = () => {
         event.preventDefault();
 
         try {
-
-            console.log(`&&&&&&&&&&&&&INPUTS BEING SENT TO CREATE PLACE: `, formState.inputs)
-            console.log(`&&&&&&&&&&&&&INPUTS BEING SENT TO CREATE PLACE: `, formState.inputs.address.value)
 
             await sendRequest('http://localhost:5000/api/places/',
                 'POST',
