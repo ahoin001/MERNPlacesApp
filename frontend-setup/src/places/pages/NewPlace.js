@@ -1,4 +1,5 @@
 import React, { useContext } from 'react'
+import { useHistory } from 'react-router-dom'
 
 import Input from '../../shared/components/FormElements/Input'
 import Button from '../../shared/components/FormElements/Button';
@@ -49,6 +50,9 @@ export const NewPlace = () => {
         false
     )
 
+    //  hook returns history object that can be used to redirect
+    const history = useHistory()
+
     const placeSubmitHandler = async event => {
 
         // Prevent form from refreshing page which would ruin react render
@@ -56,8 +60,8 @@ export const NewPlace = () => {
 
         try {
 
-            console.log(`&&&&&&&&&&&&&INPUTS BEING SENT TO CREATE PLACE: `,formState.inputs)
-            console.log(`&&&&&&&&&&&&&INPUTS BEING SENT TO CREATE PLACE: `,formState.inputs.address.value)
+            console.log(`&&&&&&&&&&&&&INPUTS BEING SENT TO CREATE PLACE: `, formState.inputs)
+            console.log(`&&&&&&&&&&&&&INPUTS BEING SENT TO CREATE PLACE: `, formState.inputs.address.value)
 
             await sendRequest('http://localhost:5000/api/places/',
                 'POST',
@@ -72,12 +76,13 @@ export const NewPlace = () => {
                 }
             )
 
+            // redirect user to home page
+            history.push('/')
+
         } catch (error) {
             // errors handled in hook using send request
         }
 
-
-        // console.log(formState.inputs) // Will be able to send this to back end
     }
 
 

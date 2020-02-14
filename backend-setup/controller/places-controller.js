@@ -1,5 +1,7 @@
 // Controller files are intended to hold logic and focus on middleware functions to be used in routes
-// ** NOTE throwing error does not work in async tasks, must use next
+// ** NOTE throwing error does not work in async tasks, must use next(error) to pass error to next middleware
+// ** NOTE post requests bodies must be json stringified so bodyparser in backend can use them 
+
 const mongoose = require('mongoose')
 const Place = require('../models/place')
 const User = require('../models/user')
