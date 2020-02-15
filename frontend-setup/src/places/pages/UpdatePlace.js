@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import useForm from '../../shared/components/hooks/form-hook'
-import { useParams } from 'react-router-dom'
+import React, { useEffect, useState, useContext } from 'react'
+import { useParams, useHistory } from 'react-router-dom'
 
+import useForm from '../../shared/components/hooks/form-hook'
 import { useHttpClient } from '../../shared/components/hooks/http-hook'
+import AuthContext  from '../../shared/components/context/auth-context'
+
 
 import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from "../../shared/components/Util/Validator";
 import Input from '../../shared/components/FormElements/Input'
@@ -16,11 +18,15 @@ import './PlaceForm.css'
 
 const UpdatePlace = props => {
 
+    const history = useHistory();
+
     const { sendRequest, clearError, error, isLoading } = useHttpClient();
     const [loadedPlace, setLoadedPlace] = useState()
 
     // Get the parameter/argument from :placeId in  /place/:placeId link
     const placeId = useParams().placeId
+
+    const auth = useContext(AuthContext)
 
     // Form State will be returned state of this components form
     // Input Handler used to update state given to useFrom Hook
@@ -65,7 +71,7 @@ const UpdatePlace = props => {
                     true);
 
             } catch (error) {
-
+                // Errors dealt with in hook
             }
 
         }
@@ -76,12 +82,32 @@ const UpdatePlace = props => {
 
 
 
-    const placeUpdateSubmitHandler = (e) => {
-
+    const placeUpdateSubmitHandler = async (e) => {
 
         e.preventDefault();
 
-        console.log(formState.inputs)
+        try {
+
+            await sendRequest(
+                `http://localhost:5000/api/places/${placeId}`,
+                'PATCH',
+                JSON.stringify({
+                    title: formState.inputs.title.value,
+                    description: formState.inputs.description
+                }),
+                {
+                    'Content-Type': 'application/json'
+                }
+            )
+
+            history.push(`/ ${auth.userI}/places`)
+
+        } catch (error) {
+            // Errors dealt with in hook
+        }
+
+        // console.log(formState.inputs)
+
 
     }
 
@@ -100,18 +126,18 @@ const UpdatePlace = props => {
     if (!loadedPlace && !error) {
 
         return (
+            <div className='center'>
+                <Card>
 
-            <Card>
-                <div className='center'>
                     <h2>COULD NOT FIND REQUESTED PLACE</h2>
-                </div>
-            </Card>
+
+                </Card>
+            </div>
         )
 
     }
 
-
-
+    // console.log(`LOADED PLACE: `, loadedPlace)
 
     return (
 
@@ -119,40 +145,43 @@ const UpdatePlace = props => {
 
             <ErrorModal error={error} onClear={clearError} />
 
-            {!isLoading && loadedPlace && <form className="place-form" onSubmit={placeUpdateSubmitHandler}>
+            {!isLoading && loadedPlace && (
 
-                {/* All Inputs change different properties of the component state */}
+                <form className="place-form" onSubmit={placeUpdateSubmitHandler}>
 
-                <Input
-                    id='title'
-                    element='input'
-                    type='text'
-                    label='Title'
-                    // VALIDATOR CHECKS IF INPUT IS EMPTY 
-                    validators={[VALIDATOR_REQUIRE()]}
-                    onInput={inputHandler}
-                    errorText='Please Enter a valid title'
-                    initialValue={formState.inputs.title.value}
-                    initialValid={formState.isValid}
-                />
+                    {/* All Inputs change different properties of the component state */}
 
-                <Input
-                    id="description"
-                    element='textarea'
-                    type="text"
-                    label="Description"
-                    validators={[VALIDATOR_MINLENGTH(5)]}
-                    errorText="Please enter a valid description with at least 5 characters"
-                    onInput={inputHandler}
-                    initialValue={formState.inputs.description.value}
-                    initialValid={true}
-                />
+                    <Input
+                        id='title'
+                        element='input'
+                        type='text'
+                        label='Title'
+                        validators={[VALIDATOR_REQUIRE()]}
+                        onInput={inputHandler}
+                        errorText='Please Enter a valid title'
+                        initialValue={loadedPlace.title}
+                        initialValid={formState.isValid}
+                    />
 
-                <Button type='submit' disabled={!formState.isValid} >
-                    UPDATE PLACE
+                    <Input
+                        id="description"
+                        element='textarea'
+                        type="text"
+                        label="Description"
+                        validators={[VALIDATOR_MINLENGTH(5)]}
+                        errorText="Please enter a valid description with at least 5 characters"
+                        onInput={inputHandler}
+                        initialValue={loadedPlace.description}
+                        initialValid={true}
+                    />
+
+                    <Button type='submit' disabled={!formState.isValid} >
+                        UPDATE PLACE
             </Button>
 
-            </form>}
+                </form>
+
+            )}
 
         </React.Fragment>
 
