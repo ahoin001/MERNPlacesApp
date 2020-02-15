@@ -26,7 +26,7 @@ const createPlace = async (req, res, next) => {
 
     const { title, description, address, creator } = req.body;
 
-    console.log(`ADRESS RECIEVED IN BACK END: `,address)
+    // console.log(`ADRESS RECIEVED IN BACK END: `,address)
 
     let coordinates;
     try {
@@ -74,6 +74,7 @@ const createPlace = async (req, res, next) => {
         user.places.push(createdPlace);
         await user.save({ session: sess });
         await sess.commitTransaction();
+
     } catch (err) {
         const error = new HttpError(
             'Transaction failed, please try again.',
