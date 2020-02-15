@@ -35,34 +35,37 @@ const createPlace = async (req, res, next) => {
         return next(error);
     }
 
+    console.log(`############ COORDINATES BEING PUT INTO PLACE`,coordinates)
+    
     const createdPlace = new Place({
         title,
         description,
         address,
         location: coordinates,
         image:
-            'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Empire_State_Building_%28aerial_view%29.jpg/400px-Empire_State_Building_%28aerial_view%29.jpg', // => File Upload module, will be replaced with real image url
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Empire_State_Building_%28aerial_view%29.jpg/400px-Empire_State_Building_%28aerial_view%29.jpg', // => File Upload module, will be replaced with real image url
         creator
-    });
-
-    let user;
-    try {
+      });
+    
+      let user;
+      try {
         user = await User.findById(creator);
-    } catch (err) {
+      } catch (err) {
         const error = new HttpError(
-            'Failed to match current user, please try again.',
-            500
+          'Creating place failed, please try again.',
+          500
         );
         return next(error);
-    }
-
-    if (!user) {
+      }
+    
+      if (!user) {
         const error = new HttpError('Could not find user for provided id.', 404);
         return next(error);
-    }
-
-    console.log(`@@@@@@@@@@@@@ THE USER CREATING PLACE: `,user);
-    console.log(`############# THE PLACE BEING CREATED: `,createdPlace);
+      }
+    
+    //   console.log(`@@@@@@@@@@@@@ THE USER CREATING PLACE: `,user);
+      console.log(`############# THE PLACE BEING CREATED: `,createdPlace);
+    
 
     try {
         const sess = await mongoose.startSession();

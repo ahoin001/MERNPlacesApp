@@ -38,7 +38,6 @@ const UserPlaces = (props) => {
 
     }, [sendRequest, userID]);
 
-
     return (
 
         <React.Fragment>

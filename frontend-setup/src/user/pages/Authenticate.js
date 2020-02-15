@@ -63,7 +63,7 @@ const Authenticate = props => {
                     }
                 )
 
-                console.log(responseData.user._id)
+                // console.log(responseData.user._id)
                 // Login using context so all components listening will know what user is signed in
                 auth.login(responseData.user._id);
 

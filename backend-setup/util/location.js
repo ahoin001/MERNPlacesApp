@@ -21,6 +21,8 @@ async function getCoordinatesFromAdress(adress) {
 
     }
 
+    console.log(`RESPONSE DATA FROM GMAP AXIOS######`, data.results[0].geometry.location)
+    
     // Object containing lat and logitude
     const coordinates = data.results[0].geometry.location;
 

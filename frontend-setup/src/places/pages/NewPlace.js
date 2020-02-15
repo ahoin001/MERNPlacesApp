@@ -99,7 +99,7 @@ export const NewPlace = () => {
                     id='title'
                     element='input'
                     type='text'
-                    label='CUSBITOM'
+                    label='Title'
                     // VALIDATOR CHECKS IF INPUT IS EMPTY 
                     validators={[VALIDATOR_REQUIRE()]}
                     onInput={inputHandler}
