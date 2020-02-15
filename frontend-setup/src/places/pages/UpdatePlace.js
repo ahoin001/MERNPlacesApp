@@ -40,7 +40,7 @@ const UpdatePlace = props => {
             description: {
                 value: '',
                 isValid: false
-            },
+            }
         },
         false
     );
@@ -80,8 +80,6 @@ const UpdatePlace = props => {
 
     }, [sendRequest, placeId, setFormData])
 
-
-
     const placeUpdateSubmitHandler = async (e) => {
 
         e.preventDefault();
@@ -100,14 +98,13 @@ const UpdatePlace = props => {
                 }
             )
 
-            history.push(`/ ${auth.userI}/places`)
+            history.push(`/ ${auth.userId}/places`)
 
         } catch (error) {
             // Errors dealt with in hook
         }
 
         // console.log(formState.inputs)
-
 
     }
 

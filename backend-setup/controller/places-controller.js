@@ -211,7 +211,7 @@ const deletePlaceById = async (req, res, next) => {
         // Populate, instead of only returning creator ref id, populate will return the entire document associated with the id
         // TLDR Returns place and 'creator' property will have access to document that matches it's _id  https://stackoverflow.com/questions/38051977/what-does-populate-in-mongoose-mean
         placeToDelete = await Place.findById(placeId).populate('creator')
-        console.log(placeToDelete)
+        
 
     } catch (error) {
 
