@@ -1,6 +1,7 @@
 /*
 Need to improve: 
-1. Understand React Portals use and function better
+1. Understand React Portals use and it's use better
+2. Develop a deeper understanding of custom hooks
 
 */
 

@@ -176,9 +176,9 @@ const Authenticate = props => {
                         element='input'
                         type='text'
                         label='Password'
-                        validators={[VALIDATOR_MINLENGTH(5)]}
+                        validators={[VALIDATOR_MINLENGTH(6)]}
                         onInput={inputHandler}
-                        errorText='Please Enter a valid password: Must Be at least 5 characters'
+                        errorText='Please Enter a valid password: Must Be at least 6 characters'
                     />
 
                     <Button disabled={!formState.isValid}>

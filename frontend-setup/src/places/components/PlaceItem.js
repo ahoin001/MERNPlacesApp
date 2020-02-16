@@ -136,8 +136,13 @@ const PlaceItem = (props) => {
                     <div className="place-item__actions">
 
                         <Button inverse onClick={openMapHandler}>VIEW ON MAP</Button>
-                        {auth.isLoggedIn && <Button to={`/places/${props.id}`}>EDIT</Button>}
-                        {auth.isLoggedIn && <Button danger onClick={showDeleteWarningHandler}>DELETE</Button>}
+
+                        {/* Only show buttons if user logged in is the user that made the place */}
+                        {auth.userId === props.creatorId &&
+                            <Button to={`/places/${props.id}`}>EDIT</Button>
+                        }
+                        {auth.userId === props.creatorId &&
+                            <Button danger onClick={showDeleteWarningHandler}>DELETE</Button>}
 
 
                     </div>
