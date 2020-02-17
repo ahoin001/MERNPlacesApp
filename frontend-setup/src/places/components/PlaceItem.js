@@ -91,7 +91,7 @@ const PlaceItem = (props) => {
 
                     <Map
                         center={props.coordinates}
-                        zoom={16}
+                        zoom={14}
                     />
 
                 </div>
