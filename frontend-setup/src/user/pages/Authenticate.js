@@ -11,6 +11,7 @@ import { useHttpClient } from '../../shared/components/hooks/http-hook';
 
 import './Auth.css'
 import Card from '../../shared/components/UIElements/Card';
+import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 
 /*
     Page component where user Can sign up or sign in
@@ -180,6 +181,8 @@ const Authenticate = props => {
                         onInput={inputHandler}
                         errorText='Please Enter a valid password: Must Be at least 6 characters'
                     />
+
+                    {!isLoginMode && <ImageUpload id="image" center/>}
 
                     <Button disabled={!formState.isValid}>
                         {isLoginMode ? 'LOGIN' : 'SIGN UP'}
