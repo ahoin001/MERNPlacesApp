@@ -7,17 +7,21 @@ const usersControllers = require('../controller/users-controller')
 
 router.get('/', usersControllers.getUsers)
 
-router.post('/signup',
-    fileUpload.single('image')
-    [check('name')
-        .not()
-        .isEmpty(),
-    check('email')
-        .normalizeEmail()
-        .isEmail(),
-    check('password')
-        .isLength({ min: 5 }),
-    ], usersControllers.signup)
+// .single middleware to expect a single file with the name image
+router.post(
+    '/signup',
+    fileUpload.single('image'), 
+    [
+        check('name')
+            .not()
+            .isEmpty(),
+        check('email')
+            .normalizeEmail()
+            .isEmail(),
+        check('password').isLength({ min: 5 }),
+
+    ], usersControllers.signup
+)
 
 router.post('/login', usersControllers.login);
 
