@@ -44,6 +44,8 @@ const Authenticate = props => {
 
         event.preventDefault();
 
+        console.log(formState.inputs)
+
         if (isLoginMode) {
 
             try {
@@ -112,8 +114,9 @@ const Authenticate = props => {
                     // Carry over inputs that were already made
                     ...formState.inputs,
 
-                    // TODO set to undefined to drop property from state
-                    name: undefined
+                    // set to undefined to drop property from state
+                    name: undefined,
+                    image: undefined
                 },
                 formState.inputs.email.isValid && formState.inputs.password.isValid
             )
@@ -125,6 +128,10 @@ const Authenticate = props => {
                 ...formState.inputs,
                 name: {
                     value: '',
+                    isValid: false
+                },
+                image: {
+                    value: null, // will be a file
                     isValid: false
                 }
             },
@@ -182,7 +189,7 @@ const Authenticate = props => {
                         errorText='Please Enter a valid password: Must Be at least 6 characters'
                     />
 
-                    {!isLoginMode && <ImageUpload id="image" center/>}
+                    {!isLoginMode && <ImageUpload id="image" center onInput={inputHandler} />}
 
                     <Button disabled={!formState.isValid}>
                         {isLoginMode ? 'LOGIN' : 'SIGN UP'}
