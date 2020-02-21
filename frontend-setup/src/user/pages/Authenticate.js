@@ -78,19 +78,19 @@ const Authenticate = props => {
 
             try {
 
+                // Unlike login, sign up also accepts an image so first I need to change form data
+
+                const formData = new FormData();
+                formData.append('email', formState.inputs.email.value)
+                formData.append('name', formState.inputs.name.value)
+                formData.append('password', formState.inputs.password.value)
+                formData.append('image', formState.inputs.image.value) // check user roues, used image here because 'image' key is expected in req.body
+
+                // When using formData, fetch will send the appropiate headers
                 const responseData = await sendRequest(
                     `http://localhost:5000/api/users/signup`,
                     "POST",
-                    JSON.stringify({
-
-                        name: formState.inputs.name.value,
-                        email: formState.inputs.email.value,
-                        password: formState.inputs.password.value
-
-                    }),
-                    {
-                        'Content-Type': 'application/json'
-                    }
+                    formData
                 )
 
                 auth.login(responseData.user._id)
