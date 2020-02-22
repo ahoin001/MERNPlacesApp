@@ -5,6 +5,7 @@
 const mongoose = require('mongoose')
 const Place = require('../models/place')
 const User = require('../models/user')
+const fs = require('fs')
 
 // To check validation from middleware
 const { validationResult } = require('express-validator')
@@ -226,6 +227,8 @@ const deletePlaceById = async (req, res, next) => {
         )
     }
 
+    const imagePath = placeToDelete.image
+
     try {
 
         // TODO Understand this better
@@ -243,6 +246,7 @@ const deletePlaceById = async (req, res, next) => {
         placeToDelete.creator.places.pull(placeToDelete);
 
         // Update user(creator) with new place array with the place removed using save()
+        // ** NOTE Because I populated creator (look above) I have access to user model through creator from place models reference
         await placeToDelete.creator.save({ session: sess })
 
         // All changes will be saved here, or cancelled if one fails
@@ -255,6 +259,11 @@ const deletePlaceById = async (req, res, next) => {
         )
 
     }
+
+    // deletes files with path
+    fs.unlink(imagePath, err => {
+        console.log(`Error deleting image`,err)
+    })
 
     res.status(200).json({ message: 'Deleted Place' })
 
