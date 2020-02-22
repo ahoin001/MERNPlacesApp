@@ -2,6 +2,7 @@
 
 const { validationResult } = require('express-validator')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 const HttpError = require('../models/http-error')
 const User = require('../models/user')
@@ -58,15 +59,18 @@ const signup = async (req, res, next) => {
         const error = new HttpError('User with this email already exsists, please log in instead', 422)
         return next(error)
     }
- 
+
+
     // Encrypt password provided by user
+    let hashedPassword;
+
     // * Second argument is how many "rolls" on password to increase strength , but make longer to decrypt later
     try {
-        let hashedPassword = await bcrypt.hash(password,12)
+        hashedPassword = await bcrypt.hash(password, 12)
     } catch (error) {
-        return next( new HttpError('Failed hashing password', 500))
+        return next(new HttpError('Failed hashing password', 500))
     }
-    
+
 
     // Places will automatically be added when a place is created by a user
     const createdUser = new User({
@@ -80,6 +84,7 @@ const signup = async (req, res, next) => {
 
     try {
 
+        // Save user to database
         await createdUser.save()
 
     } catch (error) {
@@ -90,8 +95,28 @@ const signup = async (req, res, next) => {
 
     }
 
+
+    // * NOTE Creating jsonwebtoken 
+    let token;
+    try {
+
+        // Issue maybe here with id (__id if getter didn't set in creating user)
+        token = jwt.sign(
+            { userId: createdUser.id, email: createdUser.email },
+            'supersecretstring',
+            { expiresIn: '1h' } // third argument is config object with properties we can change values of 
+        )
+    } catch (error) {
+        error = new HttpError('Sign up failed, please try again.', 500);
+        // use next to stop code excecution
+        return next(error)
+    }
+
+    // Can send back anything
+    res.status(201).json({ userId: createdUser.id, email: createdUser.email, token: token })
+
     // return object with user data that can be used
-    res.status(201).json({ user: createdUser.toObject({ getters: true }) })
+    // res.status(201).json({ user: createdUser.toObject({ getters: true }) })
 
 }
 
@@ -111,15 +136,49 @@ const login = async (req, res, next) => {
         return next(error)
     }
 
-    if (!exsistingUser || exsistingUser.password !== password) {
-        return next(new HttpError('Login failed,invalid email and or password.', 401))
+    if (!exsistingUser) {
+        return next(new HttpError('Login failed,invalid email ', 401))
     }
 
+    let isValidPassword;
+
+    try {
+
+        // Use Bcrypt to compare provided password to encrypted passwords, returns boolean
+        isValidPassword = await bcrypt.compare(password, exsistingUser.password)
+
+    } catch (error) {
+        return next(new HttpError('Login failed, inavalid credentials ', 500))
+    }
+
+    // TODO Why is this ! here?
+    if (!isValidPassword) {
+        return next(new HttpError('Login failed, inavalid password ', 401))
+    }
+
+    // * NOTE Creating jsonwebtoken 
+    let token;
+    try {
+
+        // Issue maybe here with id (__id if getter didn't set in creating user)
+        token = jwt.sign(
+            { userId: createdUser.id, email: createdUser.email },
+            'supersecretstring', //private key must be same in login at is in sign up
+            { expiresIn: '1h' } // third argument is config object with properties we can change values of 
+        )
+    } catch (error) {
+        error = new HttpError('Login failed, please try again.', 500);
+        // use next to stop code excecution
+        return next(error)
+    }
+
+    res.status(201).json({ userId: exsistingUser.id, email: exsistingUser.email, token: token })
+
     // return object with user data that can be used
-    res.json({
-        message: 'Logged in!',
-        user: exsistingUser.toObject({ getters: true })
-    })
+    // res.json({
+    //     message: 'Logged in!',
+    //     user: exsistingUser.toObject({ getters: true })
+    // })
 
 }
 
