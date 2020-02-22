@@ -19,7 +19,7 @@ const userRoutes = require('./routes/users-routes')
 */
 
 // Parse recieved data no matter what request is made, on every request so we can pass it down
-// converts json to useable javascript structures, has next() built in
+// converts requests into req.body, has next() built in
 app.use(bodyParser.json());
 
 // express.static used to return requested file, static returns a file, does not excecute it, expects an absolute path

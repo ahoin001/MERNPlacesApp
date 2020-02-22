@@ -133,7 +133,6 @@ export const NewPlace = () => {
                 />
 
                 <ImageUpload
-                    center
                     id='image'
                     onInput={inputHandler}
                     errorText='Please provide an image'

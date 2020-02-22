@@ -1,8 +1,9 @@
 // ** TODO NOTE throwing error does not work in async tasks, must use next
 
 const { validationResult } = require('express-validator')
-const HttpError = require('../models/http-error')
+const bcrypt = require('bcryptjs')
 
+const HttpError = require('../models/http-error')
 const User = require('../models/user')
 
 
@@ -57,13 +58,22 @@ const signup = async (req, res, next) => {
         const error = new HttpError('User with this email already exsists, please log in instead', 422)
         return next(error)
     }
-console.log(`^^^^^^^^^^^^^^^^^^^^ PATH TO File: `,req.file.path)
+ 
+    // Encrypt password provided by user
+    // * Second argument is how many "rolls" on password to increase strength , but make longer to decrypt later
+    try {
+        let hashedPassword = await bcrypt.hash(password,12)
+    } catch (error) {
+        return next( new HttpError('Failed hashing password', 500))
+    }
+    
+
     // Places will automatically be added when a place is created by a user
     const createdUser = new User({
         name,
         email,
         image: req.file.path,
-        password,
+        password: hashedPassword,
         places: []
 
     })
