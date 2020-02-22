@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 const express = require('express')
 const app = express();
 const bodyParser = require('body-parser')
@@ -55,6 +57,16 @@ app.use((req, res, next) => {
 // If any errors are thrown in middleware response is json with error message accessible with message property
 app.use((error, req, res, next) => {
 
+    // If there was any errors, delete(rollback) any file we recieved 
+    if (req.file) {
+
+        fs.unlink(req.file.path, (err) => {
+            console.log(err)
+        }
+        )
+
+    }
+
     if (res.headerSent) {
         return next(error)
     }
@@ -71,7 +83,7 @@ app.use((error, req, res, next) => {
 // Establish connection to database and then open server                 MERNPlaces = name of db, will create new DB if can't find matching name
 mongoose.connect(
     `mongodb+srv://alex:Alex9595@cluster0-6ofkv.mongodb.net/MERNPlaces?retryWrites=true&w=majority`
-    )
+)
     .then(() => {
 
         app.listen(5000, () => {
@@ -82,4 +94,3 @@ mongoose.connect(
         console.log(err)
     })
 
-    
