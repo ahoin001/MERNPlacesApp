@@ -27,7 +27,8 @@ const UsersItems = (props) => {
                     <div className='user-item__image'>
 
                         {/* Avatar component handles mutation of image */}
-                        <Avatar image={props.image} alt={props.name} />
+                        {/* Using Multer I stored images locally, front end prepends the path and back end provides the relative path  */}
+                        <Avatar image={`http://localhost:5000/${props.image}`} alt={props.name} />
 
                         {/* <img src={props.image} alt={props.name} /> */}
 

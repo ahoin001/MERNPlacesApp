@@ -10,7 +10,7 @@ router.get('/', usersControllers.getUsers)
 // .single middleware to expect a single file with the name image
 router.post(
     '/signup',
-    fileUpload.single('image'), 
+    fileUpload.single('image'), // image is key used to find file in post request body object
     [
         check('name')
             .not()

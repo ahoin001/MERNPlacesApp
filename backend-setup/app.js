@@ -1,26 +1,30 @@
 const fs = require('fs')
+const path = require('path')
+
 
 const express = require('express')
 const app = express();
 const bodyParser = require('body-parser')
-
-
-const HttpError = require('./models/http-error')
-
 // Connnection to database
 const mongoose = require('mongoose')
+
+const HttpError = require('./models/http-error')
 
 // Import Routers instead of cluttering this file with different routes
 const placesRoutes = require('./routes/places-routes')
 const userRoutes = require('./routes/users-routes')
 
 /*
-    Middleware is run top to bottom, and requests are passed to next middleware with next() or if a response was sent which would satisfy request
+    Middleware is run top to bottom, and requests are passed to next middleware with next() or if a response was sent which would satisfy request (Only one Response allowed per request)
 */
 
 // Parse recieved data no matter what request is made, on every request so we can pass it down
 // converts json to useable javascript structures, has next() built in
 app.use(bodyParser.json());
+
+// express.static used to return requested file, static returns a file, does not excecute it, expects an absolute path
+// path 
+app.use('/uploads/images', express.static(path.join('uploads', 'images')))
 
 app.use((req, res, next) => {
 
@@ -39,7 +43,7 @@ app.use((req, res, next) => {
 });
 
 
-// excecutes on all requests (get,post,put etc) that start with http://localhost:5000/api/places
+// .use excecutes on all requests (get,post,put etc) that start with http://localhost:5000/api/places
 app.use('/api/places', placesRoutes); // => /api/places/...
 
 app.use('/api/users', userRoutes); // => /api/places/...
@@ -54,7 +58,7 @@ app.use((req, res, next) => {
 
 
 // In middleware functions with 4 params, we have access to error , only excecuted by responses where error was thrown
-// If any errors are thrown in middleware response is json with error message accessible with message property
+// If any errors are thrown in middleware above, response here is json with error message accessible with message property
 app.use((error, req, res, next) => {
 
     // If there was any errors, delete(rollback) any file we recieved 

@@ -57,12 +57,12 @@ const signup = async (req, res, next) => {
         const error = new HttpError('User with this email already exsists, please log in instead', 422)
         return next(error)
     }
-
+console.log(`^^^^^^^^^^^^^^^^^^^^ PATH TO File: `,req.file.path)
     // Places will automatically be added when a place is created by a user
-    const newUser = new User({
+    const createdUser = new User({
         name,
         email,
-        image: 'https://www.smashbros.com/assets_v2/img/top/hero05_en.jpg',
+        image: req.file.path,
         password,
         places: []
 
@@ -70,7 +70,7 @@ const signup = async (req, res, next) => {
 
     try {
 
-        await newUser.save()
+        await createdUser.save()
 
     } catch (error) {
 
@@ -81,7 +81,7 @@ const signup = async (req, res, next) => {
     }
 
     // return object with user data that can be used
-    res.status(201).json({ user: newUser.toObject({ getters: true }) })
+    res.status(201).json({ user: createdUser.toObject({ getters: true }) })
 
 }
 
