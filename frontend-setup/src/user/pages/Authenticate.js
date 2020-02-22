@@ -9,10 +9,10 @@ import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import { useHttpClient } from '../../shared/components/hooks/http-hook';
 
-import './Auth.css'
 import Card from '../../shared/components/UIElements/Card';
 import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 
+import './Auth.css'
 /*
     Page component where user Can sign up or sign in
 */

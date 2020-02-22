@@ -1,9 +1,14 @@
 const express = require('express')
+
 // Returns Router Object from express object
 const router = express.Router()
 
+// Multer storage and file handling configuration I created 
+const fileUpload = require('../middleware/file-upload')
+
 // Import specific middleware from package 
 const { check } = require('express-validator')
+
 // Business Logic functions
 const placesControllers = require('../controller/places-controller')
 
@@ -18,6 +23,7 @@ router.get('/user/:uid', placesControllers.getPlaceByUserId);
 // Add validation checks on request
 router.post(
     '/',
+    fileUpload.single('image'),
     [
         check('title')
             .not()
