@@ -44,7 +44,7 @@ const Authenticate = props => {
 
         event.preventDefault();
 
-        console.log(formState.inputs)
+        // console.log(formState.inputs)
 
         if (isLoginMode) {
 
@@ -66,9 +66,10 @@ const Authenticate = props => {
                     }
                 )
 
-                console.log(`###RESPONSE DATA ON LOGIN UP: `,responseData.user._id)
-                
+                console.log(`###RESPONSE DATA ON LOGIN UP: UID: ${responseData.userId} , Token: ${responseData.token}`)
+
                 // Login using context so all components listening will know what user is signed in
+                // Also save jwt to context
                 auth.login(responseData.userId, responseData.token);
 
             } catch (error) {
@@ -94,7 +95,7 @@ const Authenticate = props => {
                     formData
                 )
 
-                console.log(`###RESPONSE DATA ON SIGN UP: `,responseData.user._id)
+                console.log(`###RESPONSE DATA ON SIGN UP: UID: ${responseData.userId} , Token: ${responseData.token}`)
                 auth.login(responseData.userId, responseData.token);
 
             } catch (err) {

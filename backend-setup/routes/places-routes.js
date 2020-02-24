@@ -5,6 +5,7 @@ const router = express.Router()
 
 // Multer storage and file handling configuration I created 
 const fileUpload = require('../middleware/file-upload')
+
 const checkAuth = require('../middleware/check-auth')
 
 // Import specific middleware from package 

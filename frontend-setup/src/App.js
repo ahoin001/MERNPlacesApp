@@ -19,7 +19,7 @@ import UpdatePlace from './places/pages/UpdatePlace';
 const App = () => {
 
   /*
-   State to pass if user is loggedIn to any component that needs the info
+   State to pass if user has jwt to any component that needs the info
   */
   const [token, setToken] = useState(false)
 
@@ -33,8 +33,8 @@ const App = () => {
 
   }, [])
 
-  const logout = useCallback((token) => {
-    setToken(token)
+  const logout = useCallback(() => {
+    setToken(null)
     setUserId(null);
   }, []
   )
