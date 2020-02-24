@@ -5,6 +5,7 @@ const router = express.Router()
 
 // Multer storage and file handling configuration I created 
 const fileUpload = require('../middleware/file-upload')
+const checkAuth = require('../middleware/check-auth')
 
 // Import specific middleware from package 
 const { check } = require('express-validator')
@@ -19,6 +20,9 @@ const placesControllers = require('../controller/places-controller')
 router.get('/:pid', placesControllers.getPlaceById);
 
 router.get('/user/:uid', placesControllers.getPlaceByUserId);
+
+// Require token for authorization for any routes after this point
+router.use(checkAuth)
 
 // Add validation checks on request
 router.post(

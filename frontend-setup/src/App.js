@@ -21,21 +21,20 @@ const App = () => {
   /*
    State to pass if user is loggedIn to any component that needs the info
   */
-  const [isLoggedIn, setisLoggedIn] = useState(false)
+  const [token, setToken] = useState(false)
 
   // Will be used in context to keep track of unique users signed in
   const [userId, setUserId] = useState(false)
 
-  const login = useCallback((uid) => {
+  const login = useCallback((uid, token) => {
 
-    setisLoggedIn(true);
-    // 
+    setToken(token);
     setUserId(uid);
+
   }, [])
 
-  const logout = useCallback(() => {
-    setisLoggedIn(false)
-    // 
+  const logout = useCallback((token) => {
+    setToken(token)
     setUserId(null);
   }, []
   )
@@ -45,7 +44,7 @@ const App = () => {
   /*
    Have different routes and redirects if user is logged in
   */
-  if (isLoggedIn) {
+  if (token) {
     routes = (
 
       // Switch will render first matching path, Router would possibly render multiple (ex: /places/new and /places/:placeId would both render
@@ -104,7 +103,8 @@ const App = () => {
     // Context Object has a react property called Provider
     // It allows consuming components to 'listen' to context changes.
     <AuthContext.Provider value={{
-      isLoggedIn: isLoggedIn,
+      isLoggedIn: !!token, // the !! converts to boolean
+      token: token,
       userId: userId,
       login: login,
       logout: logout

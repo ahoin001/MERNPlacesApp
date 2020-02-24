@@ -75,7 +75,10 @@ export const NewPlace = () => {
 
             await sendRequest('http://localhost:5000/api/places/',
                 'POST',
-                formData
+                formData,
+                {   // Attatch Authorization header 
+                    Authorization: `Bearer ` + auth.token
+                }
             )
 
             // redirect user to home page
@@ -135,7 +138,7 @@ export const NewPlace = () => {
                 <ImageUpload
                     id='image'
                     onInput={inputHandler}
-                    errorText='Please provide an image'
+                    // errorText='Please provide an image'
 
                 />
 
