@@ -36,8 +36,8 @@ const createPlace = async (req, res, next) => {
         return next(error);
     }
 
-    console.log(`############ COORDINATES BEING PUT INTO PLACE`,coordinates)
-    
+    console.log(`############ COORDINATES BEING PUT INTO PLACE`, coordinates)
+
     const createdPlace = new Place({
         title,
         description,
@@ -45,27 +45,27 @@ const createPlace = async (req, res, next) => {
         location: coordinates,
         image: req.file.path,
         creator
-      });
-    
-      let user;
-      try {
+    });
+
+    let user;
+    try {
         user = await User.findById(creator);
-      } catch (err) {
+    } catch (err) {
         const error = new HttpError(
-          'Creating place failed, please try again.',
-          500
+            'Creating place failed, please try again.',
+            500
         );
         return next(error);
-      }
-    
-      if (!user) {
+    }
+
+    if (!user) {
         const error = new HttpError('Could not find user for provided id.', 404);
         return next(error);
-      }
-    
+    }
+
     //   console.log(`@@@@@@@@@@@@@ THE USER CREATING PLACE: `,user);
-      console.log(`############# THE PLACE BEING CREATED: `,createdPlace);
-    
+    console.log(`############# THE PLACE BEING CREATED: `, createdPlace);
+
 
     try {
         const sess = await mongoose.startSession();
@@ -181,10 +181,17 @@ const updatePlaceById = async (req, res, next) => {
 
     }
 
+    // If the place creator isn't the user signed in 
+    // creater is a mongoose objectid type, so must be string for comparison
+    if (placeToUpdate.creator.toString() !== req.userData.userID) {
+        const error = new HttpError('Users can only edit places they added', 401);
+        return next(error)
+    }
+
     // Make changes with new values
     placeToUpdate.title = title;
     placeToUpdate.description = description;
-console.log(`################################################################`)
+    console.log(`################################################################`)
     try {
 
         // Behind the scenes .save method has change tracking on each document and knows to update document instead of save a new one. 
@@ -211,7 +218,7 @@ const deletePlaceById = async (req, res, next) => {
         // Populate, instead of only returning creator ref id, populate will return the entire document associated with the id
         // TLDR Returns place and 'creator' property will have access to document that matches it's _id  https://stackoverflow.com/questions/38051977/what-does-populate-in-mongoose-mean
         placeToDelete = await Place.findById(placeId).populate('creator')
-        
+
 
     } catch (error) {
 
@@ -262,7 +269,7 @@ const deletePlaceById = async (req, res, next) => {
 
     // deletes files with path
     fs.unlink(imagePath, err => {
-        console.log(`Error deleting image`,err)
+        console.log(`Error deleting image`, err)
     })
 
     res.status(200).json({ message: 'Deleted Place' })
