@@ -97,7 +97,7 @@ const UpdatePlace = props => {
                 }),
                 {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ` + auth.token
+                    Authorization: `Bearer ` + auth.token // Requires token to be extracted in checkAuth to use routes
                 }
             )
 

@@ -191,7 +191,7 @@ const updatePlaceById = async (req, res, next) => {
     // Make changes with new values
     placeToUpdate.title = title;
     placeToUpdate.description = description;
-    console.log(`################################################################`)
+
     try {
 
         // Behind the scenes .save method has change tracking on each document and knows to update document instead of save a new one. 
@@ -232,6 +232,12 @@ const deletePlaceById = async (req, res, next) => {
         return next(
             new HttpError('Failed to find place to delete', 404)
         )
+    }
+
+    // Make sure only user that made place can delete the place
+    if (placeToDelete.creator.id !== req.userData.userID) {
+        const error = new HttpError('Users can only delete places they added', 401);
+        return next(error)
     }
 
     const imagePath = placeToDelete.image

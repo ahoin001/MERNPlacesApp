@@ -137,7 +137,7 @@ const login = async (req, res, next) => {
     }
 
     if (!exsistingUser) {
-        return next(new HttpError('Login failed,invalid email ', 401))
+        return next(new HttpError('Login failed,invalid email ', 403))
     }
 
     let isValidPassword;
@@ -153,7 +153,7 @@ const login = async (req, res, next) => {
 
     // TODO Why is this ! here?
     if (!isValidPassword) {
-        return next(new HttpError('Login failed, inavalid password ', 401))
+        return next(new HttpError('Login failed, inavalid password ', 403))
     }
 
     // * NOTE Creating jsonwebtoken 
@@ -172,7 +172,9 @@ const login = async (req, res, next) => {
         return next(error)
     }
 
-    // console.log(`*********************`,token)
+    console.log(`*********************`,token)
+    //  console.log(`*********************`,exsistingUser.id)
+    //  console.log(`*********************`,exsistingUser._id)
 
     res.status(201).json({ userId: exsistingUser.id, email: exsistingUser.email, token: token })
 
