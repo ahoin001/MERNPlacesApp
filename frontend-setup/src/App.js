@@ -5,7 +5,7 @@ Need to improve:
 
 */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom";
 import AuthContext from './shared/components/context/auth-context'
 
@@ -31,13 +31,32 @@ const App = () => {
     setToken(token);
     setUserId(uid);
 
+    // Use LocalStorage to storetoken, local storage is available globally from the browser
+    // Only accepts string so stringify objects
+    localStorage.setItem('userData', JSON.stringify({ userId: uid, token: token }))
+
+
   }, [])
 
   const logout = useCallback(() => {
     setToken(null)
     setUserId(null);
+    localStorage.removeItem('userData')
   }, []
   )
+
+  // Check if browser still has user data, to log them in if thier token has not expired
+  useEffect(() => {
+
+    const storedData = JSON.parse(localStorage.getItem('userData'))
+
+    if (storedData && storedData.token) {
+
+      login(storedData.userId, storedData.token)
+
+    }
+
+  }, [login])
 
   let routes;
 
