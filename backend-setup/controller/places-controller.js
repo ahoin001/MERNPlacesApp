@@ -184,7 +184,7 @@ const updatePlaceById = async (req, res, next) => {
     // Make changes with new values
     placeToUpdate.title = title;
     placeToUpdate.description = description;
-
+console.log(`################################################################`)
     try {
 
         // Behind the scenes .save method has change tracking on each document and knows to update document instead of save a new one. 
@@ -193,7 +193,7 @@ const updatePlaceById = async (req, res, next) => {
 
     } catch (error) {
         return next(
-            new HttpError('Something went wrong could not update place', 500)
+            new HttpError(error, 500)
         )
     }
 

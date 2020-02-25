@@ -3,7 +3,7 @@ import { useParams, useHistory } from 'react-router-dom'
 
 import useForm from '../../shared/components/hooks/form-hook'
 import { useHttpClient } from '../../shared/components/hooks/http-hook'
-import AuthContext  from '../../shared/components/context/auth-context'
+import AuthContext from '../../shared/components/context/auth-context'
 
 
 import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from "../../shared/components/Util/Validator";
@@ -58,17 +58,19 @@ const UpdatePlace = props => {
 
                 setLoadedPlace(responseData.place);
 
-                setFormData({
-                    title: {
-                        value: responseData.place.title,
-                        isValid: true
+                setFormData(
+                    {
+                        title: {
+                            value: responseData.place.title,
+                            isValid: true
+                        },
+                        description: {
+                            value: responseData.place.description,
+                            isValid: true
+                        }
                     },
-                    description: {
-                        value: responseData.place.description,
-                        isValid: true
-                    }
-                },
-                    true);
+                    true
+                );
 
             } catch (error) {
                 // Errors dealt with in hook
@@ -91,20 +93,21 @@ const UpdatePlace = props => {
                 'PATCH',
                 JSON.stringify({
                     title: formState.inputs.title.value,
-                    description: formState.inputs.description
+                    description: formState.inputs.description.value
                 }),
                 {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ` + auth.token
                 }
             )
 
-            history.push(`/ ${auth.userId}/places`)
+            history.push(`/${auth.userId}/places`)
 
         } catch (error) {
             // Errors dealt with in hook
         }
 
-        // console.log(formState.inputs)
+        console.log(formState.inputs)
 
     }
 
@@ -154,10 +157,10 @@ const UpdatePlace = props => {
                         type='text'
                         label='Title'
                         validators={[VALIDATOR_REQUIRE()]}
-                        onInput={inputHandler}
                         errorText='Please Enter a valid title'
+                        onInput={inputHandler}
                         initialValue={loadedPlace.title}
-                        initialValid={formState.isValid}
+                        initialValid={true}
                     />
 
                     <Input
@@ -166,15 +169,15 @@ const UpdatePlace = props => {
                         type="text"
                         label="Description"
                         validators={[VALIDATOR_MINLENGTH(5)]}
-                        errorText="Please enter a valid description with at least 5 characters"
                         onInput={inputHandler}
+                        errorText="Please enter a valid description with at least 5 characters"
                         initialValue={loadedPlace.description}
                         initialValid={true}
                     />
 
-                    <Button type='submit' disabled={!formState.isValid} >
+                    <Button type="submit" disabled={!formState.isValid}>
                         UPDATE PLACE
-            </Button>
+          </Button>
 
                 </form>
 
