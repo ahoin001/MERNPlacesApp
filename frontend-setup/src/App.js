@@ -26,14 +26,24 @@ const App = () => {
   // Will be used in context to keep track of unique users signed in
   const [userId, setUserId] = useState(false)
 
-  const login = useCallback((uid, token) => {
+  const login = useCallback((uid, token, expirationDate) => {
 
     setToken(token);
     setUserId(uid);
 
+    // When logging in, if a valid expiration date is given, keep it 
+    // IF no expiration date is given, set one 1 hour from now
+    const tokenExpirationDate = expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60)
+
     // Use LocalStorage to storetoken, local storage is available globally from the browser
     // Only accepts string so stringify objects
-    localStorage.setItem('userData', JSON.stringify({ userId: uid, token: token }))
+    localStorage.setItem('userData', JSON.stringify(
+      {
+        userId: uid,
+        token: token,
+        expiration: tokenExpirationDate.toISOString()
+
+      }))
 
 
   }, [])
@@ -50,9 +60,13 @@ const App = () => {
 
     const storedData = JSON.parse(localStorage.getItem('userData'))
 
-    if (storedData && storedData.token) {
+    if (storedData &&
+      storedData.token &&
+      new Date(storedData.expiration) > new Date() // If expiration deadline is still ahead of current time
+    ) {
 
-      login(storedData.userId, storedData.token)
+      // then token is still valid and user can be logged in
+      login(storedData.userId, storedData.token, new Date(storedData.expiration))
 
     }
 
