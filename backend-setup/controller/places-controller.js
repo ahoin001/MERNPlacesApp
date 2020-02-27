@@ -25,7 +25,7 @@ const createPlace = async (req, res, next) => {
         );
     }
 
-    const { title, description, address, creator } = req.body;
+    const { title, description, address } = req.body;
 
     // console.log(`ADRESS RECIEVED IN BACK END: `,address)
 
@@ -44,12 +44,12 @@ const createPlace = async (req, res, next) => {
         address,
         location: coordinates,
         image: req.file.path,
-        creator
+        creator: req.userData.userID
     });
 
     let user;
     try {
-        user = await User.findById(creator);
+        user = await User.findById(req.userData.userID);
     } catch (err) {
         const error = new HttpError(
             'Creating place failed, please try again.',
@@ -136,14 +136,6 @@ const getPlaceByUserId = async (req, res, next) => {
 
         const error = new HttpError('Failed to fetch places for this user', 500);
         return next(error)
-
-    }
-
-    if (!places || places.length === 0) {
-
-        return next(
-            new HttpError('Failed to fetch places for this user', 500)
-        )
 
     }
 

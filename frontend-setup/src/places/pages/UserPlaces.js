@@ -46,6 +46,7 @@ const UserPlaces = (props) => {
             prevPlaces.filter(place => place.id !== deletedPlaceId))
     }
 
+    console.log(`LOADED PLACES LIST`, loadedPlaces)
 
     return (
 
