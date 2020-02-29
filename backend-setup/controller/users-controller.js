@@ -103,7 +103,7 @@ const signup = async (req, res, next) => {
         // Issue maybe here with id (__id if getter didn't set in creating user)
         token = jwt.sign(
             { userId: createdUser.id, email: createdUser.email },
-            'supersecretstring',
+            process.env.JWT_PRIVATE_KEY,
             { expiresIn: '1h' } // third argument is config object with properties we can change values of 
         )
     } catch (error) {
@@ -163,7 +163,7 @@ const login = async (req, res, next) => {
         // Issue maybe here with id (__id if getter didn't set in creating user)
         token = jwt.sign(
             { userId: exsistingUser.id, email: exsistingUser.mail },
-            'supersecretstring', //private key must be same in login at is in sign up
+            process.env.JWT_PRIVATE_KEY, //private key must be same in login at is in sign up
             { expiresIn: '1h' } // third argument is config object with properties we can change values of 
         )
     } catch (error) {
@@ -172,7 +172,7 @@ const login = async (req, res, next) => {
         return next(error)
     }
 
-    console.log(`*********************`,token)
+    console.log(`*********************`, token)
     //  console.log(`*********************`,exsistingUser.id)
     //  console.log(`*********************`,exsistingUser._id)
 

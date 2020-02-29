@@ -20,7 +20,7 @@ module.exports = (req, res, next) => {
 
         //  * NOTE Verify token, using private key created when creating token, 
         // returns payload encoded into token (Check sign up/login controller)
-        const decodedToken = jwt.verify(token, 'supersecretstring')
+        const decodedToken = jwt.verify(token, process.env.JWT_PRIVATE_KEY)
         // console.log(`!!!!!!!!!!!!!! DCTOKEN: `, decodedToken)
 
         // add userData property to add token to request object

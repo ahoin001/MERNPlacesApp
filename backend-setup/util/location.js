@@ -1,11 +1,11 @@
 // Axios used to send requests from our server to another server
 const axios = require('axios')
-const API_KEY = 'AIzaSyDENeDUDcQ9tKV709ReXdOSME5fQsC-Rm4'
+const API_KEY = process.env.GOOGLE_API_KEY
 const HttpError = require('../models/http-error')
 
 // async await to consume promise from axios call
 async function getCoordinatesFromAdress(adress) {
-    
+
     // encodeURI is used to convert a string to a url friendly format
     // await consumes promise 
     const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(adress)}&key=${API_KEY}`)
@@ -22,7 +22,7 @@ async function getCoordinatesFromAdress(adress) {
     }
 
     // console.log(`RESPONSE DATA FROM GMAP AXIOS######`, data.results[0].geometry.location)
-    
+
     // Object containing lat and logitude
     const coordinates = data.results[0].geometry.location;
 
