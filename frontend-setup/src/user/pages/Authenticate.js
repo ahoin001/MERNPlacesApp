@@ -50,9 +50,10 @@ const Authenticate = props => {
 
             try {
 
+                console.log('*******',process.env.REACT_APP_SERVER_URL)
                 // From hook, use fetch call to post data for login, if no errors, will proceed to login
                 const responseData = await sendRequest(
-                    `http://localhost:5000/api/users/login`,
+                    `${process.env.REACT_APP_BACKEND_URL}/users/login`,
                     "POST",
                     JSON.stringify({ //format object to json for request
 
