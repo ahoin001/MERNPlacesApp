@@ -72,7 +72,7 @@ export const NewPlace = () => {
             formData.append('address', formState.inputs.address.value)
             formData.append('image', formState.inputs.image.value)
 
-            await sendRequest('http://localhost:5000/api/places/',
+            await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/places/`,
                 'POST',
                 formData,
                 {   // Attatch Authorization header 
@@ -137,7 +137,7 @@ export const NewPlace = () => {
                 <ImageUpload
                     id='image'
                     onInput={inputHandler}
-                    // errorText='Please provide an image'
+                // errorText='Please provide an image'
 
                 />
 

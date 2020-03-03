@@ -25,7 +25,7 @@ const Users = () => {
             try {
 
                 // By default fetch is get request, and does not requre headers or data to post 
-                const responseData = await sendRequest(`http://localhost:5000/api/users`);
+                const responseData = await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/users`);
 
                 // Can check response from backend for why we picked users property in response
                 setLoadedUsers(responseData.users)

@@ -3,7 +3,7 @@ import { useState, useCallback, useEffect } from 'react'
 let logoutTimer;
 
 const useAuth = () => {
-    console.log(`AUTH HOOK`)
+    // console.log(`AUTH HOOK`)
     /*
    State to pass if user has jwt to any component that needs the info
   */

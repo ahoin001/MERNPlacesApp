@@ -25,7 +25,7 @@ const UserPlaces = (props) => {
 
             try {
 
-                const responseData = await sendRequest(`http://localhost:5000/api/places/user/${userID}`);
+                const responseData = await sendRequest(`${process.env.REACT_APP_BACKEND_URL}/places/user/${userID}`);
 
                 // Save returned list of places to state
                 setLoadedPlaces(responseData.places)
