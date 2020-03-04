@@ -23,7 +23,7 @@ import './PlaceForm.css'
 /*
     Page component where user can fill out form and add a new place
 */
-export const NewPlace = () => {
+const NewPlace = () => {
 
     // Get Access to information in our custom context
     const auth = useContext(AuthContext);
@@ -152,3 +152,5 @@ export const NewPlace = () => {
     )
 
 }
+
+export default NewPlace

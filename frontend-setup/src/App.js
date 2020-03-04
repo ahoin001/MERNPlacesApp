@@ -14,10 +14,17 @@ import AuthContext from './shared/components/context/auth-context'
 import MainNavigation from './shared/components/Navigation/MainNavigation'
 
 import Users from './user/pages/Users'
-import Authenticate from './user/pages/Authenticate'
-import { NewPlace } from './places/pages/NewPlace'
-import UserPlaces from './places/pages/UserPlaces';
-import UpdatePlace from './places/pages/UpdatePlace';
+// import Authenticate from './user/pages/Authenticate'
+// import NewPlace from './places/pages/NewPlace'
+// import UserPlaces from './places/pages/UserPlaces';
+// import UpdatePlace from './places/pages/UpdatePlace';
+
+// ** NOTE Lazy load to only import and load routes when necessary
+// Only possible for react routes component rendering
+const Authenticate = React.lazy(() => import('./user/pages/Authenticate'))
+const NewPlace = React.lazy(() => import('./places/pages/UserPlaces'))
+const UserPlaces = React.lazy(() => import('./user/pages/Users'))
+const UpdatePlace = React.lazy(() => import('./places/pages/UpdatePlace'))
 
 const App = () => {
 
